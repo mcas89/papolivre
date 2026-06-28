@@ -16,7 +16,7 @@ import MyRoomsPopup from "../../components/home/MyRoomsPopup/MyRoomsPopup";
 function Room() {
 
   const navigate = useNavigate();
-  const { messages, currentUser, onlineUsers, sendMessage, roomName, leaveRoom, blockedUsers, toggleBlockUser } = useChat();
+  const { messages, currentUser, onlineUsers, sendMessage, roomName, leaveRoom, blockedUsers, toggleBlockUser, unreadRooms } = useChat();
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [isPrivateReply, setIsPrivateReply] = useState(false);
@@ -51,6 +51,7 @@ function Room() {
       <RoomHeader
         roomName={roomName}
         onlineCount={onlineUsers.length}
+        unreadCount={unreadRooms?.length || 0}
         onHome={() => navigate(ROUTES.HOME)}
         onUsers={() => setDrawerOpen(true)}
         onRooms={() => setRoomsPopupOpen(true)}
@@ -108,6 +109,7 @@ function Room() {
       <MyRoomsPopup 
         open={roomsPopupOpen} 
         onClose={() => setRoomsPopupOpen(false)} 
+        unreadRooms={unreadRooms}
       />
 
     </main>

@@ -13,6 +13,7 @@ function HomeHeader({
   onSearchToggle,
   searchQuery,
   onSearchChange,
+  unreadCount = 0,
 }) {
 
   const userName =
@@ -56,6 +57,9 @@ function HomeHeader({
             title="Minhas Salas"
           >
             <MessageCircle size={19} />
+            {unreadCount > 0 && (
+              <span className="badge-notification">{unreadCount > 9 ? "9+" : unreadCount}</span>
+            )}
           </button>
 
           <button

@@ -26,6 +26,13 @@ export function ChatProvider({ children }) {
   const [messages,     setMessages]     = useState([]);
   const [onlineUsers,  setOnlineUsers]  = useState([]);
   const [loading,      setLoading]      = useState(true);
+  const [unreadRooms,  setUnreadRooms]  = useState([]);
+
+  // ======================
+  // CONTROLE DE NOTIFICAÇÕES DE FUNDO
+  // ======================
+  const lastViewedAt = useRef({});
+  const currentRoomRef = useRef("geral");
 
   // Ref para guardar cleanup de presença (evita duplo registro)
   const presenceCleanupRef = useRef(null);
@@ -41,6 +48,11 @@ export function ChatProvider({ children }) {
     setLoading(true);
     setMessages([]);
     cutoffRef.current = null; // Reset cutoff when changing rooms
+    currentRoomRef.current = currentRoom;
+
+    // Remove sala atual das não lidas e atualiza o timestamp
+    setUnreadRooms(prev => prev.filter(r => r !== currentRoom));
+    lastViewedAt.current[currentRoom] = Date.now();
 
     // Carrega histórico e já liga o listener de tempo real
     const unsubscribeMsgs = chatService.subscribe(currentRoom, (msgs) => {
@@ -82,6 +94,8 @@ export function ChatProvider({ children }) {
     }
 
     return () => {
+      // Quando sai da sala, atualiza o timestamp de última visualização
+      lastViewedAt.current[currentRoom] = Date.now();
       unsubscribeMsgs();
       setLoading(true);
     };
@@ -123,6 +137,41 @@ export function ChatProvider({ children }) {
     };
 
   }, [currentRoom, user]);
+
+  // ======================
+  // NOTIFICAÇÕES (Background Listeners)
+  // ======================
+
+  useEffect(() => {
+    if (!user?.uid || !user?.connectedRooms || user.connectedRooms.length === 0) return;
+
+    const unsubs = [];
+
+    user.connectedRooms.forEach((roomId) => {
+      // Inicializa o tempo se nunca foi visto nesta sessão
+      if (!lastViewedAt.current[roomId]) {
+        lastViewedAt.current[roomId] = Date.now();
+      }
+
+      const unsub = chatService.subscribeToMentions(roomId, user.uid, (msg) => {
+        if (!msg) return;
+
+        // Se a mensagem for mais nova que a nossa última visualização
+        // e nós NÃO estivermos na sala no momento
+        if (msg.timestamp > lastViewedAt.current[roomId] && roomId !== currentRoomRef.current) {
+          setUnreadRooms((prev) => {
+            if (!prev.includes(roomId)) {
+              return [...prev, roomId];
+            }
+            return prev;
+          });
+        }
+      });
+      unsubs.push(unsub);
+    });
+
+    return () => unsubs.forEach(fn => fn());
+  }, [user?.uid, user?.connectedRooms]);
 
   // ======================
   // TROCAR DE SALA
@@ -334,6 +383,7 @@ export function ChatProvider({ children }) {
     leaveRoom,
     toggleBlockUser,
     blockedUsers, // útil para a UI mostrar o status correto
+    unreadRooms,
   };
 
   return (

@@ -14,6 +14,7 @@ function RoomHeader({
   onUsers,
   onRooms,
   onLeave,
+  unreadCount = 0,
 }) {
   return (
     <header className="room-header">
@@ -53,8 +54,14 @@ function RoomHeader({
         <button
           className="icon-button"
           onClick={onRooms}
+          style={{ position: "relative" }}
         >
           <MessageCircle size={20} />
+          {unreadCount > 0 && (
+            <span className="badge-notification" style={{ top: -2, right: -2 }}>
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
         </button>
 
         <button

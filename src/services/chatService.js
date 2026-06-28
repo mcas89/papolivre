@@ -17,6 +17,7 @@ import {
   onDisconnect,
   remove,
   get,
+  equalTo,
 } from "firebase/database";
 
 import { rtdb } from "../firebase/config";
@@ -169,6 +170,36 @@ const chatService = {
     // Retorna unsubscribe
     return () => off(q, "value", handleSnapshot);
 
+  },
+
+  // -------------------------
+  // Escutar apenas menções diretas (Respostas/Privado)
+  // Retorna função de unsubscribe
+  // -------------------------
+  subscribeToMentions(roomId, userId, callback) {
+    if (!roomId || !userId) return () => {};
+
+    const q = query(
+      messagesRef(roomId),
+      orderByChild("targetUser"),
+      equalTo(userId),
+      limitToLast(1)
+    );
+
+    const handleSnapshot = (snapshot) => {
+      let latestMsg = null;
+      snapshot.forEach((child) => {
+        latestMsg = { id: child.key, ...child.val() };
+      });
+      if (latestMsg) {
+        callback(latestMsg);
+      }
+    };
+
+    // onChildAdded é melhor aqui pois só dispara para novos itens ou o último existente
+    onValue(q, handleSnapshot);
+
+    return () => off(q, "value", handleSnapshot);
   },
 
   // -------------------------

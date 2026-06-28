@@ -10,7 +10,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { ROUTES } from "../../../constants/routes";
 import PremiumLimitModal from "../../ui/PremiumLimitModal/PremiumLimitModal";
 
-function MyRoomsPopup({ open, onClose }) {
+function MyRoomsPopup({ open, onClose, unreadRooms = [] }) {
 
   const navigate                    = useNavigate();
   const { joinRoom, currentRoom, onlineUsers } = useChat();
@@ -137,6 +137,9 @@ function MyRoomsPopup({ open, onClose }) {
 
                 {isActive && (
                   <span className="badge badge--active">Atual</span>
+                )}
+                {!isActive && unreadRooms.includes(room.id) && (
+                  <span className="badge badge--unread">1 Nova Msg</span>
                 )}
 
               </div>

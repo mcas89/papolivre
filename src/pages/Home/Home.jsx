@@ -21,7 +21,7 @@ import PremiumLimitModal from "../../components/ui/PremiumLimitModal/PremiumLimi
 function Home() {
   const navigate = useNavigate();
 
-  const { joinRoom } = useChat();
+  const { joinRoom, unreadRooms } = useChat();
   const { user, logout } = useAuth();
 
     // remove limite 5 salas no home
@@ -156,6 +156,7 @@ function Home() {
       <MyRoomsPopup
         open={roomsOpen}
         onClose={() => setRoomsOpen(false)}
+        unreadRooms={unreadRooms}
       />
 
       <PremiumLimitModal
@@ -168,6 +169,7 @@ function Home() {
         user={user}
         onMenu={() => setDrawerOpen(true)}
         onRooms={() => setRoomsOpen(true)}
+        unreadCount={unreadRooms?.length || 0}
         onNotifications={() => navigate(ROUTES.NOTIFICATIONS)}
         searchOpen={searchOpen}
         onSearchToggle={handleSearchToggle}

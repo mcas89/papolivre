@@ -1,0 +1,72 @@
+.reply-bar {
+  margin: 0 18px 12px 18px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 16px;
+  background: rgba(88, 101, 242, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--primary);
+  width: max-content;
+  max-width: 90%;
+  z-index: 5;
+  position: relative;
+  animation: slideUp 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reply-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+}
+
+.toggle-private-btn {
+  background: rgba(0,0,0,0.2);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: var(--transition);
+}
+.toggle-private-btn:hover {
+  background: rgba(0,0,0,0.4);
+  transform: scale(1.05);
+}
+
+.reply-info strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.reply-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-left: 8px;
+}
+
+.reply-close:hover {
+  background: var(--danger);
+  transform: rotate(90deg);
+}

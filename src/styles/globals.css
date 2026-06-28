@@ -1,0 +1,27 @@
+html,
+body,
+#root{
+
+    width:100%;
+
+    min-height:100vh;
+
+    background:var(--bg-primary);
+
+    color:var(--text-primary);
+
+    font-family:"Inter",sans-serif;
+
+}
+
+body{
+
+    overflow-x:hidden;
+
+}
+
+*{
+
+    box-sizing:border-box;
+
+}

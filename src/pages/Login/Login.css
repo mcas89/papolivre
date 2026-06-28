@@ -1,0 +1,500 @@
+.login {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+
+  background: radial-gradient(
+    circle at center,
+    #17172a 0%,
+    #101018 45%,
+    #0a0a0f 100%
+  );
+}
+
+/* ── CARD ───────────────────────────────────────────── */
+
+.login-card {
+  width: 100%;
+  max-width: 460px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  padding: 32px;
+
+  border-radius: 22px;
+
+  background: rgba(20, 20, 30, 0.82);
+
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+
+  animation: fadeUp .6s ease;
+}
+
+/* ── HEADER ─────────────────────────────────────────── */
+
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.login-logo {
+  width: 220px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.login-title {
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.login-subtitle {
+  margin-top: 6px;
+  font-size: .9rem;
+  color: var(--color-text-light);
+}
+
+/* ── ERRO GLOBAL ────────────────────────────────────── */
+
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 12px;
+  background: rgba(248, 113, 113, .1);
+  border: 1px solid rgba(248, 113, 113, .3);
+  color: #f87171;
+  font-size: .88rem;
+}
+
+/* ── BOTÃO ENTRAR SEM CADASTRO ──────────────────────── */
+
+.btn-anon {
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  width: 100%;
+  padding: 15px 20px;
+
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  background-size: 200% 200%;
+
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .3px;
+
+  box-shadow:
+    0 0 0 0 rgba(139, 92, 246, 0),
+    0 8px 24px rgba(99, 102, 241, .4);
+
+  animation: pulseGlow 2.5s ease-in-out infinite;
+
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.btn-anon:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow:
+    0 0 0 4px rgba(139, 92, 246, .2),
+    0 16px 36px rgba(99, 102, 241, .5);
+  animation-play-state: paused;
+}
+
+.btn-anon:active {
+  transform: translateY(-1px) scale(.99);
+}
+
+.btn-anon:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Efeito de brilho que passa pelo botão */
+.btn-anon-glow {
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, .18),
+    transparent
+  );
+  transform: skewX(-20deg);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.btn-anon-text {
+  position: relative;
+  z-index: 1;
+}
+
+/* Badge "Grátis" no canto do botão */
+.btn-anon-badge {
+  position: relative;
+  z-index: 1;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .2);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+/* Ícone raio animado */
+.zap-icon {
+  position: relative;
+  z-index: 1;
+  animation: zapBounce 1.8s ease-in-out infinite;
+}
+
+/* ── DIVISOR ────────────────────────────────────────── */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: rgba(255, 255, 255, .35);
+
+  font-size: .78rem;
+  letter-spacing: .3px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, .08);
+}
+
+/* ── FORM ───────────────────────────────────────────── */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── INPUT GROUP ────────────────────────────────────── */
+
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 14px;
+
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, .03);
+
+  border: 1px solid rgba(255, 255, 255, .08);
+
+  transition: all .2s ease;
+}
+
+.input-group:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, .12);
+}
+
+.input-group svg {
+  color: var(--color-text-light);
+  flex-shrink: 0;
+}
+
+.input-group input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: .95rem;
+}
+
+.input-group input::placeholder {
+  color: rgba(255, 255, 255, .45);
+}
+
+/* ── BOTÃO OLHINHO ──────────────────────────────────── */
+
+.eye-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, .4);
+  cursor: pointer;
+  padding: 2px;
+  transition: color .2s;
+}
+
+.eye-btn:hover {
+  color: #fff;
+}
+
+/* ── FOOTER ─────────────────────────────────────────── */
+
+.login-footer {
+  text-align: center;
+  font-size: .9rem;
+  color: var(--color-text-light);
+}
+
+.register-link {
+  color: #7c8cff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: .2s;
+}
+
+.register-link:hover {
+  color: #fff;
+}
+
+/* ── ANIMAÇÕES ──────────────────────────────────────── */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Pulso suave de glow no botão anônimo */
+@keyframes pulseGlow {
+  0%   { box-shadow: 0 8px 24px rgba(99, 102, 241, .35); }
+  50%  { box-shadow: 0 8px 36px rgba(139, 92, 246, .60); }
+  100% { box-shadow: 0 8px 24px rgba(99, 102, 241, .35); }
+}
+
+/* Brilho que desliza pelo botão */
+@keyframes shimmer {
+  0%   { left: -75%; }
+  60%  { left: 130%; }
+  100% { left: 130%; }
+}
+
+/* Raio quicando */
+@keyframes zapBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  30%       { transform: translateY(-3px) rotate(-8deg); }
+  60%       { transform: translateY(1px) rotate(4deg); }
+}
+
+/* Spinner de loading */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin .8s linear infinite;
+}
+
+/* ── RESPONSIVO ─────────────────────────────────────── */
+
+@media (max-width: 480px) {
+
+  .login {
+    padding: 18px;
+  }
+
+  .login-card {
+    padding: 24px;
+    border-radius: 18px;
+  }
+
+  .login-logo {
+    width: 180px;
+  }
+
+  .login-title {
+    font-size: 24px;
+  }
+
+}
+
+/* ── ANON MODAL ─────────────────────────────────────── */
+
+.anon-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 9998;
+}
+
+.anon-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  max-width: 90%;
+  background: #14141e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 28px 24px;
+  color: white;
+  z-index: 9999;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);
+  animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalScaleUp {
+  from {
+    transform: translate(-50%, -50%) scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.anon-modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.anon-modal-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.anon-modal-header p {
+  font-size: 13px;
+  color: var(--color-text-light);
+  opacity: 0.8;
+}
+
+.anon-modal-error {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #f87171;
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+.anon-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.anon-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.anon-input-wrapper label {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.anon-avatars-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.anon-avatars-section label {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.anon-avatars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.anon-avatar-btn {
+  background: #1e1e2d;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.anon-avatar-btn:hover {
+  background: #252538;
+  transform: translateY(-2px);
+}
+
+.anon-avatar-btn.active {
+  background: rgba(91, 124, 255, 0.15);
+  border-color: #5b7cff;
+  box-shadow: 0 0 12px rgba(91, 124, 255, 0.3);
+}
+
+.anon-avatar-emoji {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.anon-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-cancel-anon {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel-anon:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.2);
+}

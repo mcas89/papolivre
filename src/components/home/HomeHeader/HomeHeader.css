@@ -1,0 +1,186 @@
+/* =============================
+   HomeHeader
+   ============================= */
+
+.home-header {
+  padding: 22px 18px 0;
+}
+
+/* ---- Linha superior ---- */
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+/* ---- Usuário ---- */
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.header-user-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.header-greeting {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.header-user-text h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+/* ---- Ícones de ação ---- */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 5px;
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), transform var(--transition);
+  position: relative;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+/* Estado ativo (busca aberta) */
+.icon-btn--active {
+  background: rgba(88, 101, 242, 0.18);
+  color: var(--primary);
+}
+
+.icon-btn--active:hover {
+  background: rgba(88, 101, 242, 0.26);
+  color: var(--primary-hover);
+}
+
+/* Separador visual antes do menu */
+.icon-btn--menu {
+  margin-left: 2px;
+  border-left: 1px solid var(--border-color);
+  border-radius: 0 11px 11px 0;
+  padding-left: 6px;
+  width: 42px;
+}
+
+/* ---- Campo de busca expansível ---- */
+
+.header-search-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease,
+    margin-bottom 0.3s ease;
+  margin-bottom: 0;
+}
+
+.header-search-wrapper--open {
+  max-height: 64px;
+  opacity: 1;
+  margin-bottom: 14px;
+}
+
+.header-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 0 14px;
+  height: 46px;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.header-search-bar:focus-within {
+  border-color: rgba(88, 101, 242, 0.5);
+  background: rgba(88, 101, 242, 0.06);
+}
+
+.search-icon-inline {
+  color: rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+  transition: color var(--transition);
+}
+
+.header-search-bar:focus-within .search-icon-inline {
+  color: var(--primary);
+}
+
+.header-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.header-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.search-clear-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--transition), color var(--transition);
+}
+
+.search-clear-btn:hover {
+  background: rgba(255, 107, 107, 0.18);
+  color: var(--danger);
+}

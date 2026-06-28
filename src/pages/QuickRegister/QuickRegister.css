@@ -1,0 +1,280 @@
+.register {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+
+  background: radial-gradient(
+    circle at center,
+    #17172a 0%,
+    #101018 45%,
+    #0a0a0f 100%
+  );
+}
+
+/* CARD */
+
+.register-card {
+  width: 100%;
+  max-width: 460px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  padding: 32px;
+
+  border-radius: 22px;
+
+  background: rgba(20, 20, 30, 0.82);
+
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+
+  animation: fadeUp .6s ease;
+}
+
+/* HEADER */
+
+.register-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.register-logo {
+  width: 220px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.register-header h1 {
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.register-header p {
+  margin-top: 6px;
+  font-size: .9rem;
+  color: var(--color-text-light);
+}
+
+/* FORM */
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* INPUTS */
+
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 14px;
+
+  border-radius: 14px;
+
+  background: rgba(255,255,255,.03);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  transition: all .2s ease;
+}
+
+.input-group:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+}
+
+.input-group.has-error {
+  border-color: #f87171;
+  box-shadow: 0 0 0 3px rgba(248,113,113,.12);
+}
+
+/* ERROS DE CAMPO */
+
+.field-error {
+  display: block;
+  font-size: .78rem;
+  color: #f87171;
+  margin-top: -8px;
+  margin-left: 4px;
+}
+
+/* ERRO GLOBAL (servidor/Firebase) */
+
+.register-error-global {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(248,113,113,.1);
+  border: 1px solid rgba(248,113,113,.3);
+  color: #f87171;
+  font-size: .88rem;
+}
+
+.input-group svg {
+  color: var(--color-text-light);
+  flex-shrink: 0;
+}
+
+.input-group input {
+  flex: 1;
+
+  background: transparent;
+  border: none;
+  outline: none;
+
+  color: #fff;
+  font-size: .95rem;
+}
+
+.input-group input::placeholder {
+  color: rgba(255,255,255,.45);
+}
+
+/* DATE PICKER — tema escuro */
+
+.input-group input[type="date"] {
+  color-scheme: dark;
+  cursor: pointer;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.6);
+  cursor: pointer;
+  transition: opacity .2s;
+}
+
+.input-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Label flutuante de data vazia */
+.input-group input[type="date"]:not(:focus):not([value])::-webkit-datetime-edit {
+  color: rgba(255,255,255,.45);
+}
+
+/* SELECT */
+
+.register-select {
+  flex: 1;
+
+  background: transparent;
+
+  border: none;
+
+  outline: none;
+
+  color: #fff;
+
+  font-size: .95rem;
+
+  cursor: pointer;
+}
+
+.register-select option {
+  background: #1d1d28;
+  color: #fff;
+}
+
+/* BOTÃO OLHO */
+
+.eye-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: none;
+  border: none;
+
+  color: rgba(255,255,255,.5);
+
+  cursor: pointer;
+
+  transition: .2s;
+}
+
+.eye-btn:hover {
+  color: #fff;
+}
+
+/* BOTÃO */
+
+.register-form button:last-child {
+  margin-top: 6px;
+}
+
+/* FOOTER */
+
+.register-footer {
+  text-align: center;
+
+  font-size: .9rem;
+
+  color: var(--color-text-light);
+}
+
+.login-link {
+  color: #7c8cff;
+  text-decoration: none;
+  font-weight: 600;
+
+  transition: .2s;
+}
+
+.login-link:hover {
+  color: #fff;
+}
+
+/* ANIMAÇÕES */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin .8s linear infinite;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 480px) {
+
+  .register {
+    padding: 18px;
+  }
+
+  .register-card {
+    padding: 24px;
+    border-radius: 18px;
+  }
+
+  .register-logo {
+    width: 180px;
+  }
+
+  .register-header h1 {
+    font-size: 24px;
+  }
+
+}

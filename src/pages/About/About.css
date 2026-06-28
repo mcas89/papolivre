@@ -1,0 +1,210 @@
+.about-page {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #0d0e1a 0%, #0f1120 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.about-icon {
+  background: linear-gradient(135deg, rgba(236,72,153,0.3), rgba(167,139,250,0.3)) !important;
+  color: #f9a8d4 !important;
+}
+
+/* ---- Hero ---- */
+.about-content {
+  padding: 32px 20px 60px;
+  max-width: 540px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.about-hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.about-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(124,58,237,0.3));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.about-version-badge {
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.08em;
+}
+
+.about-hero h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #c084fc, #f9a8d4, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.about-tagline {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ---- Missão ---- */
+.about-mission {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about-mission p {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.92rem;
+  line-height: 1.75;
+  margin: 0;
+}
+
+.about-mission strong {
+  color: rgba(255,255,255,0.9);
+}
+
+/* ---- Features ---- */
+.about-features-section h3 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.3);
+  margin: 0 0 14px;
+}
+
+.about-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.about-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.about-feature-item:hover {
+  border-color: rgba(167,139,250,0.25);
+}
+
+.about-feature-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(236,72,153,0.2));
+  color: #c084fc;
+  flex-shrink: 0;
+}
+
+/* ---- Release info ---- */
+.about-release {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.about-release-info {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 14px 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.about-release-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.3);
+}
+
+.about-release-version {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.8);
+}
+
+/* ---- Footer ---- */
+.about-footer {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.about-footer p {
+  color: rgba(255,255,255,0.35);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+}
+
+.about-heart {
+  color: #ec4899;
+  display: inline;
+}
+
+.about-privacy-link {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  font-size: 0.82rem;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.about-privacy-link:hover {
+  border-color: rgba(167,139,250,0.4);
+  color: #c084fc;
+}

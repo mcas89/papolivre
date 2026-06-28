@@ -1,0 +1,25 @@
+:root {
+
+  /* Cores */
+
+  --bg-primary: #0f1117;
+  --bg-secondary: #171a23;
+  --bg-card: rgba(20, 20, 30, 0.75);
+
+  --border-color: rgba(255,255,255,.06);
+
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255,255,255,.65);
+
+  --primary: #5865f2;
+  --primary-hover: #6975ff;
+
+  --danger: #ff6b6b;
+
+  /* Layout */
+
+  --radius: 18px;
+
+  --transition: .2s ease;
+
+}

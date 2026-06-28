@@ -1,0 +1,151 @@
+.credits-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.credits-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.credits-header h3 {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.credits-balance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 215, 0, 0.15);
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.credits-icon {
+  color: #ffd700;
+}
+
+.credits-balance span {
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.credits-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.pro-active-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.1));
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,215,0,0.3);
+}
+
+.pro-crown-active {
+  color: #ffd700;
+  margin-bottom: 5px;
+}
+
+.pro-active-status p {
+  margin: 0 0 5px;
+  color: var(--text-color);
+}
+
+.pro-active-status small {
+  color: #999;
+}
+
+.pro-inactive-status {
+  text-align: center;
+  padding: 10px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+}
+
+.pro-inactive-status p {
+  margin: 0 0 5px;
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+.pro-inactive-status small {
+  color: #666;
+}
+
+.ready-for-pro {
+  background: rgba(40, 167, 69, 0.1);
+  border: 1px solid rgba(40, 167, 69, 0.3);
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.ready-for-pro p {
+  margin: 0 0 10px;
+  color: #28a745;
+  font-weight: bold;
+}
+
+.btn-activate-pro {
+  background: linear-gradient(135deg, #ffd700, #ffa500);
+  color: #1a1b22;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: opacity 0.2s;
+}
+
+.btn-activate-pro:hover {
+  opacity: 0.9;
+}
+
+.get-credits {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.get-credits p {
+  font-size: 0.9rem;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.btn-telegram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #2481cc;
+  color: white;
+  text-decoration: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.btn-telegram:hover {
+  background: #1d69a6;
+}

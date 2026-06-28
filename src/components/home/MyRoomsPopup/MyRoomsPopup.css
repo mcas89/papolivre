@@ -1,0 +1,173 @@
+.rooms-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(3px);
+  z-index: 998;
+}
+
+.rooms-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  width: 420px;
+  max-width: 92%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: #1a1b22;
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  z-index: 999;
+  animation: popup 0.25s ease forwards;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+}
+
+@keyframes popup {
+  to {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.popup-header h2 {
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+
+.popup-header span {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.popup-header button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.popup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* ---- Room item (agora é <button>) ---- */
+
+.popup-room {
+  width: 100%;
+  text-align: left;
+  background: #252733;
+  padding: 16px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: 0.25s;
+  color: white;
+}
+
+.popup-room:hover {
+  transform: translateY(-2px);
+  background: #2c3040;
+}
+
+.popup-room--active {
+  border-color: #5b7cff;
+  background: #1e2035;
+}
+
+.room-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.room-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.room-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.popup-room p {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+
+.room-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+/* ---- Badge ---- */
+
+.badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #5b7cff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge--active {
+  width: auto;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  background: #5b7cff33;
+  color: #7a9bff;
+  border: 1px solid #5b7cff55;
+}
+
+/* ---- Loading ---- */
+
+.popup-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 0;
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.popup-loading .spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Empty ---- */
+
+.popup-empty {
+  text-align: center;
+  padding: 24px 0;
+  opacity: 0.5;
+  font-size: 14px;
+}

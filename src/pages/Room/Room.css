@@ -1,0 +1,13 @@
+.room{
+
+    display:flex;
+
+    flex-direction:column;
+
+    height:100vh;
+
+    background:#0f1117;
+
+    overflow:hidden;
+
+}

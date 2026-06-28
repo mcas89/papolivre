@@ -1,0 +1,232 @@
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.home-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 290px;
+  height: 100vh;
+  background: rgba(15, 17, 23, 0.97);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1000;
+  animation: drawerSlide 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes drawerSlide {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ---- Header ---- */
+
+.drawer-header {
+  padding: 24px 20px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.drawer-user {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.drawer-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.drawer-user h3 {
+  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.drawer-user span {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.drawer-close {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.drawer-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+/* ---- Menu ---- */
+
+.drawer-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 12px;
+  flex: 1;
+}
+
+.drawer-menu button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 13px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  text-align: left;
+  position: relative;
+}
+
+.drawer-menu button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+/* Ícone do menu */
+.drawer-menu-icon {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+  transition: background var(--transition);
+}
+
+.drawer-menu button:hover .drawer-menu-icon {
+  background: rgba(88, 101, 242, 0.15);
+  color: var(--primary);
+}
+
+/* Item Premium */
+.drawer-menu-premium .drawer-menu-icon--premium {
+  background: rgba(234, 179, 8, 0.12);
+  color: #eab308;
+}
+
+.drawer-menu-premium:hover {
+  background: rgba(234, 179, 8, 0.06) !important;
+}
+
+.drawer-menu-premium:hover .drawer-menu-icon--premium {
+  background: rgba(234, 179, 8, 0.2) !important;
+  color: #eab308 !important;
+}
+
+.drawer-premium-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #eab308;
+  background: rgba(234, 179, 8, 0.15);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+
+/* ---- Footer ---- */
+
+.drawer-footer {
+  padding: 16px 12px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logout {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 13px;
+  background: transparent;
+  color: var(--danger);
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.logout:hover {
+  background: rgba(255, 107, 107, 0.1);
+}
+
+/* ---- Legal links ---- */
+.drawer-legal-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.drawer-legal-links span {
+  color: rgba(255,255,255,0.15);
+  font-size: 0.8rem;
+}
+
+.drawer-legal-links button {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.3);
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: color 0.2s;
+  font-family: "Inter", sans-serif;
+}
+
+.drawer-legal-links button:hover {
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.04);
+}

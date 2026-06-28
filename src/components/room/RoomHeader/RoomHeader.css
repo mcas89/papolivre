@@ -1,8 +1,8 @@
 .room-header{
 
-    height:64px;
+    height:60px;
 
-    padding:0 18px;
+    padding:0 14px;
 
     display:flex;
 
@@ -16,9 +16,7 @@
 
     border-bottom:1px solid rgba(255,255,255,.05);
 
-    position:sticky;
-
-    top:0;
+    flex-shrink: 0;
 
     z-index:100;
 

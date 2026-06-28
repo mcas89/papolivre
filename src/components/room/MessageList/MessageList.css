@@ -1,12 +1,14 @@
+/* =============================================
+   MESSAGE LIST — ocupa o espaço restante e rola
+   ============================================= */
 .message-list {
-
   flex: 1;
-
+  min-height: 0;           /* CRÍTICO: sem isso o flex não respeita o overflow */
   display: flex;
   flex-direction: column;
-
-  padding: 14px;
-
+  padding: 12px 10px 24px 10px;
   overflow-y: auto;
-
+  overscroll-behavior: contain;
+  /* Rolagem suave em iOS */
+  -webkit-overflow-scrolling: touch;
 }

@@ -31,6 +31,19 @@ function Room() {
     });
   }
 
+  // Filtra msgs para esconder privadas que não são para o usuário atual
+  const visibleMessages = messages.filter((m) => {
+    if (!m.private) return true;              // msg pública → sempre visível
+    if (m.userId === currentUser?.uid) return true;        // eu enviei → vejo
+    if (m.targetUser === currentUser?.uid) return true;    // sou o destinatário → vejo
+    return false;                             // privada de outros → oculta
+  });
+
+  function handleCancelReply() {
+    setSelectedUser(null);
+    setIsPrivateReply(false);
+  }
+
   return (
 
     <main className="room">
@@ -63,7 +76,7 @@ function Room() {
       )}
 
       <MessageList
-        messages={messages}
+        messages={visibleMessages}
         currentUserId={currentUser?.uid}
         onSelectUser={(user) => {
           const isOnline = onlineUsers.some(u => u.id === user.userId);
@@ -77,17 +90,20 @@ function Room() {
         selectedUserId={selectedUser?.userId}
       />
 
-      <PrivateReplyBar
-        selectedUser={selectedUser}
-        isPrivateReply={isPrivateReply}
-        onTogglePrivate={() => setIsPrivateReply(!isPrivateReply)}
-        onCancel={() => setSelectedUser(null)}
-      />
+      {/* Wrapper que agrupa reply bar + input → sempre no fundo */}
+      <div className="chat-input-wrapper">
+        <PrivateReplyBar
+          selectedUser={selectedUser}
+          isPrivateReply={isPrivateReply}
+          onTogglePrivate={() => setIsPrivateReply(!isPrivateReply)}
+          onCancel={handleCancelReply}
+        />
 
-      <ChatInput
-        selectedUser={selectedUser}
-        onSendMessage={handleSendMessage}
-      />
+        <ChatInput
+          selectedUser={selectedUser}
+          onSendMessage={handleSendMessage}
+        />
+      </div>
 
       <MyRoomsPopup 
         open={roomsPopupOpen} 

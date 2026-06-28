@@ -67,6 +67,7 @@ function Profile() {
           onSave={handleSave}
           saving={saving}
           saved={saved}
+          isAnonymous={user?.anonymous || false}
         />
 
         <div className="profile-support-section">

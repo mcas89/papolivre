@@ -3,7 +3,7 @@
    ============================= */
 
 .home-header {
-  padding: 22px 18px 0;
+  padding: max(22px, env(safe-area-inset-top, 22px)) 16px 0;
 }
 
 /* ---- Linha superior ---- */

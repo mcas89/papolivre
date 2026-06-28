@@ -6,10 +6,10 @@
 .message-wrapper {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 12px;
   animation: messageFadeIn 0.3s ease forwards;
-  max-width: 85%;
+  max-width: 90%;
 }
 
 .message-wrapper.mine {
@@ -19,8 +19,8 @@
 }
 
 .message-avatar {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
@@ -46,8 +46,8 @@
 
 .message-bubble {
   background: var(--bg-card);
-  padding: 10px 14px;
-  border-radius: 18px 18px 18px 4px;
+  padding: 8px 12px;
+  border-radius: 16px 16px 16px 4px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -57,7 +57,7 @@
 }
 
 .message-wrapper.mine .message-bubble {
-  border-radius: 18px 18px 4px 18px;
+  border-radius: 16px 16px 4px 16px;
 }
 
 .message-wrapper.private .message-bubble,
@@ -103,7 +103,7 @@
 
 .message-body {
   font-size: 0.95rem;
-  line-height: 1.4;
+  line-height: 1.35;
   color: var(--text-primary);
   word-break: break-word;
 }

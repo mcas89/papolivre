@@ -1,9 +1,9 @@
 .featured-card {
   position: relative;
   overflow: hidden;
-  margin: 22px 18px;
-  padding: 28px;
-  border-radius: 22px;
+  margin: 16px 16px 24px 16px;
+  padding: 24px;
+  border-radius: 20px;
   cursor: pointer;
   background: linear-gradient(
     -45deg,
@@ -43,8 +43,8 @@
 .featured-top-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
 .featured-icon {

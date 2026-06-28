@@ -154,14 +154,19 @@ export function ChatProvider({ children }) {
       targetRoomId = `geo_${latIndex}_${lngIndex}`;
     }
 
-    // 3. Limite de pessoas na sala (100 para grátis, 130 para premium)
+    // 3. Se já estamos NESSA sala exata, não precisa fazer nada — apenas navegar
+    if (targetRoomId === currentRoom) {
+      return { success: true, targetRoomId };
+    }
+
+    // 4. Limite de pessoas na sala (100 para grátis, 130 para premium)
     const count = await chatService.getPresenceCount(targetRoomId);
     const maxLimit = user?.isPremium ? 130 : 100;
     if (count >= maxLimit) {
       return { success: false, error: "SALA_CHEIA", limit: maxLimit };
     }
 
-    // 4. Executa a entrada real
+    // 5. Executa a entrada real
     if (presenceCleanupRef.current) {
       await presenceCleanupRef.current();
       presenceCleanupRef.current = null;

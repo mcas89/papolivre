@@ -108,6 +108,26 @@
   word-break: break-word;
 }
 
+/* ========================================================
+   SYSTEM MESSAGE
+   ======================================================== */
+.message-system {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+  width: 100%;
+}
+
+.message-system-text {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 .message-footer {
   display: flex;
   align-items: center;

@@ -229,6 +229,16 @@ export function ChatProvider({ children }) {
         await updateDoc(doc(db, "users", user.uid), {
           connectedRooms: arrayUnion(roomId)
         });
+
+        // Envia a mensagem automática de boas-vindas/entrada
+        await chatService.sendMessage(targetRoomId, {
+          userId: "system",
+          userName: "Sistema",
+          userAvatar: "👋",
+          text: `${user.nickname || user.name || "Alguém"} entrou na sala.`,
+          type: "system"
+        });
+
       } catch (err) {
         console.error("Erro ao salvar sala conectada:", err);
       }

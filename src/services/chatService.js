@@ -129,6 +129,7 @@ const chatService = {
       userName:     messageData.userName,
       userAvatar:   messageData.userAvatar   || null,
       text:         messageData.text,
+      type:         messageData.type         || "text",
     };
 
     const pushRef = await push(messagesRef(roomId), newMessage);
@@ -186,14 +187,17 @@ const chatService = {
       limitToLast(1)
     );
 
+    let isInitial = true;
+
     const handleSnapshot = (snapshot) => {
       let latestMsg = null;
       snapshot.forEach((child) => {
         latestMsg = { id: child.key, ...child.val() };
       });
-      if (latestMsg) {
+      if (latestMsg && !isInitial) {
         callback(latestMsg);
       }
+      isInitial = false;
     };
 
     // onChildAdded é melhor aqui pois só dispara para novos itens ou o último existente

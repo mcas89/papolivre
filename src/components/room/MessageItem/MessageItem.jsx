@@ -36,6 +36,14 @@ function MessageItem({
   const avatar = message.userAvatar || `https://i.pravatar.cc/150?u=${message.userId}`;
   const isEmoji = avatar && !avatar.startsWith("http") && !avatar.startsWith("data:") && !avatar.startsWith("/");
 
+  if (message.type === "system") {
+    return (
+      <div className="message-system">
+        <span className="message-system-text">{message.text}</span>
+      </div>
+    );
+  }
+
   return (
 
     <div className={`message-wrapper ${isMine ? "mine" : ""} ${isPrivate ? "private" : ""} ${isMyDirectMessage ? "active-conversation" : ""} ${isTargetingMe ? "directed-to-me" : ""}`}>

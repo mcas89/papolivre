@@ -215,6 +215,17 @@ export function ChatProvider({ children }) {
       return { success: false, error: "SALA_CHEIA", limit: maxLimit };
     }
 
+    // === MENSAGEM DE SAÍDA DA SALA ANTERIOR ===
+    if (currentRoom && currentRoom !== "geral" && currentRoom !== targetRoomId) {
+      chatService.sendMessage(currentRoom, {
+        userId: "system",
+        userName: "Sistema",
+        userAvatar: "👋",
+        text: `${user.nickname || user.name || "Alguém"} saiu da sala.`,
+        type: "system"
+      }).catch(() => {});
+    }
+
     // 5. Executa a entrada real
     if (presenceCleanupRef.current) {
       await presenceCleanupRef.current();
@@ -223,22 +234,21 @@ export function ChatProvider({ children }) {
 
     setCurrentRoom(targetRoomId);
 
+    // === MENSAGEM DE ENTRADA NA NOVA SALA ===
+    chatService.sendMessage(targetRoomId, {
+      userId: "system",
+      userName: "Sistema",
+      userAvatar: "👋",
+      text: `${user.nickname || user.name || "Alguém"} entrou na sala.`,
+      type: "system"
+    }).catch(() => {});
+
     // Salva a sala nas conectadas do usuário no Firestore
     if (user?.uid && isNewRoom) {
       try {
         await updateDoc(doc(db, "users", user.uid), {
           connectedRooms: arrayUnion(roomId)
         });
-
-        // Envia a mensagem automática de boas-vindas/entrada
-        await chatService.sendMessage(targetRoomId, {
-          userId: "system",
-          userName: "Sistema",
-          userAvatar: "👋",
-          text: `${user.nickname || user.name || "Alguém"} entrou na sala.`,
-          type: "system"
-        });
-
       } catch (err) {
         console.error("Erro ao salvar sala conectada:", err);
       }
@@ -276,8 +286,18 @@ export function ChatProvider({ children }) {
     if (!user?.uid) return;
 
     // Remove a sala conectada atual do array no Firestore
-    // Procuramos qual o ID original que foi salvo (se é geo_ usamos pessoas_proximas para limpar)
     const roomIdToLeave = currentRoom?.startsWith("geo_") ? "pessoas_proximas" : currentRoom;
+
+    // === MENSAGEM DE SAÍDA ===
+    if (currentRoom && currentRoom !== "geral") {
+      chatService.sendMessage(currentRoom, {
+        userId: "system",
+        userName: "Sistema",
+        userAvatar: "👋",
+        text: `${user.nickname || user.name || "Alguém"} saiu da sala.`,
+        type: "system"
+      }).catch(() => {});
+    }
 
     if (presenceCleanupRef.current) {
       await presenceCleanupRef.current();

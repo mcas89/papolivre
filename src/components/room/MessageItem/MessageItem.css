@@ -119,13 +119,12 @@
 }
 
 .message-system-text {
-  background: rgba(255, 255, 255, 0.08);
-  padding: 6px 16px;
-  border-radius: 16px;
+  background: transparent;
+  padding: 4px 8px;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.45);
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .message-footer {

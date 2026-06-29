@@ -156,9 +156,8 @@ export function ChatProvider({ children }) {
       const unsub = chatService.subscribeToMentions(roomId, user.uid, (msg) => {
         if (!msg) return;
 
-        // Se a mensagem for mais nova que a nossa última visualização
-        // e nós NÃO estivermos na sala no momento
-        if (msg.timestamp > lastViewedAt.current[roomId] && roomId !== currentRoomRef.current) {
+        // Se a mensagem nova chegou e nós NÃO estivermos na sala no momento, notifica!
+        if (roomId !== currentRoomRef.current) {
           setUnreadRooms((prev) => {
             if (!prev.includes(roomId)) {
               return [...prev, roomId];
@@ -215,17 +214,6 @@ export function ChatProvider({ children }) {
       return { success: false, error: "SALA_CHEIA", limit: maxLimit };
     }
 
-    // === MENSAGEM DE SAÍDA DA SALA ANTERIOR ===
-    if (currentRoom && currentRoom !== "geral" && currentRoom !== targetRoomId) {
-      chatService.sendMessage(currentRoom, {
-        userId: "system",
-        userName: "Sistema",
-        userAvatar: "👋",
-        text: `${user.nickname || user.name || "Alguém"} saiu da sala.`,
-        type: "system"
-      }).catch(() => {});
-    }
-
     // 5. Executa a entrada real
     if (presenceCleanupRef.current) {
       await presenceCleanupRef.current();
@@ -234,21 +222,23 @@ export function ChatProvider({ children }) {
 
     setCurrentRoom(targetRoomId);
 
-    // === MENSAGEM DE ENTRADA NA NOVA SALA ===
-    chatService.sendMessage(targetRoomId, {
-      userId: "system",
-      userName: "Sistema",
-      userAvatar: "👋",
-      text: `${user.nickname || user.name || "Alguém"} entrou na sala.`,
-      type: "system"
-    }).catch(() => {});
-
     // Salva a sala nas conectadas do usuário no Firestore
     if (user?.uid && isNewRoom) {
       try {
         await updateDoc(doc(db, "users", user.uid), {
           connectedRooms: arrayUnion(roomId)
         });
+
+        // === MENSAGEM DE ENTRADA (Apenas quando conecta na sala) ===
+        if (targetRoomId !== "geral") {
+          chatService.sendMessage(targetRoomId, {
+            userId: "system",
+            userName: "Sistema",
+            userAvatar: "👋",
+            text: `📥 ${user.nickname || user.name || "Alguém"} chegou na sala!`,
+            type: "system"
+          }).catch(() => {});
+        }
       } catch (err) {
         console.error("Erro ao salvar sala conectada:", err);
       }
@@ -288,13 +278,13 @@ export function ChatProvider({ children }) {
     // Remove a sala conectada atual do array no Firestore
     const roomIdToLeave = currentRoom?.startsWith("geo_") ? "pessoas_proximas" : currentRoom;
 
-    // === MENSAGEM DE SAÍDA ===
+    // === MENSAGEM DE SAÍDA (Apenas quando DESCONECTA da sala definitivamente) ===
     if (currentRoom && currentRoom !== "geral") {
       chatService.sendMessage(currentRoom, {
         userId: "system",
         userName: "Sistema",
-        userAvatar: "👋",
-        text: `${user.nickname || user.name || "Alguém"} saiu da sala.`,
+        userAvatar: "🚪",
+        text: `🚪 ${user.nickname || user.name || "Alguém"} saiu da sala.`,
         type: "system"
       }).catch(() => {});
     }

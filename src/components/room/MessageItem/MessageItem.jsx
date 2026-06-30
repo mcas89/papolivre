@@ -1,5 +1,5 @@
 import "./MessageItem.css";
-import { AlertTriangle, Crown } from "lucide-react";
+import { AlertTriangle, Crown, Lock } from "lucide-react";
 import UserAvatar from "../../ui/UserAvatar/UserAvatar";
 
 function formatTime(timestamp) {
@@ -67,25 +67,18 @@ function MessageItem({
 
         <div className="message-header">
           <span className="message-name">
-            {hasTarget ? (
+            {!!(message.userPremium || (message.userAvatar && typeof message.userAvatar === 'object' && message.userAvatar.premium)) && (
+              <span className="msg-premium-icon">
+                <Crown size={14} />
+              </span>
+            )}
+            {message.userName}
+            {isPrivate && hasTarget && (
               <>
-                {message.userName}
-                {!!(message.userPremium || (message.userAvatar && typeof message.userAvatar === 'object' && message.userAvatar.premium)) && (
-                  <span className="msg-premium-badge">
-                    <Crown size={10} /> Premium Pro
-                  </span>
-                )}
-                <span> 📢 {message.targetUserName}</span>
-              </>
-            ) : (
-              <>
-                {message.userName}
-                {!!(message.userPremium || (message.userAvatar && typeof message.userAvatar === 'object' && message.userAvatar.premium)) && (
-                  <span className="msg-premium-badge">
-                    <Crown size={10} /> Premium Pro
-                  </span>
-                )}
-                <span> 📢 todos</span>
+                <span className="msg-private-lock">
+                  <Lock size={12} />
+                </span>
+                {message.targetUserName}
               </>
             )}
           </span>
@@ -108,12 +101,6 @@ function MessageItem({
         <div className="message-body">
           {message.text}
         </div>
-
-        {isPrivate && (
-          <div className="message-footer">
-            <span className="private-tag">🔒 Privado</span>
-          </div>
-        )}
 
       </div>
 

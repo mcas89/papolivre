@@ -20,6 +20,7 @@ import {
 } from "firebase/database";
 
 import { rtdb } from "../firebase/config";
+import { sanitizeMessage } from "../utils/messageSanitizer";
 
 // ============================================================
 // HELPERS
@@ -126,7 +127,7 @@ const chatService = {
        userId: messageData.userId,
        userName: messageData.userName,
        userAvatar: messageData.userAvatar || null,
-       text: messageData.text,
+       text: sanitizeMessage(messageData.text),
        type: messageData.type || "text",
        userPremium: messageData.userPremium || false,
      };
@@ -171,10 +172,8 @@ const chatService = {
       callback(msgs);
     };
 
-    onValue(q, handleSnapshot);
-
-    // Retorna unsubscribe
-    return () => off(q, "value", handleSnapshot);
+    const unsubscribe = onValue(q, handleSnapshot);
+    return unsubscribe;
 
   },
 
@@ -219,17 +218,23 @@ const chatService = {
         return;
       }
 
-      // Chamadas seguintes: qualquer mensagem nova (exceto do próprio usuário)
+      // Chamadas seguintes: verifica condições estritas para gerar notificação
       if (latestKey && latestKey !== lastSeenKey) {
         lastSeenKey = latestKey;
-        if (latestMsg?.userId !== userId) {
+        
+        if (
+          latestMsg?.userId !== userId &&
+          latestMsg?.type !== "system" &&
+          latestMsg?.targetUser &&
+          latestMsg?.targetUser === userId
+        ) {
           callback();
         }
       }
     };
 
-    onValue(q, handleSnapshot);
-    return () => off(q, "value", handleSnapshot);
+    const unsubscribe = onValue(q, handleSnapshot);
+    return unsubscribe;
   },
 
   // -------------------------
@@ -241,6 +246,8 @@ const chatService = {
     if (!user?.uid) return () => {};
 
     const pRef = presenceRef(roomId, user.uid);
+
+    await onDisconnect(pRef).cancel();
 
     await set(pRef, {
       uid:      user.uid,
@@ -254,6 +261,7 @@ const chatService = {
     await onDisconnect(pRef).remove();
 
     return async () => {
+      await onDisconnect(pRef).cancel();
       await remove(pRef);
     };
 
@@ -288,9 +296,8 @@ const chatService = {
       callback(users);
     };
 
-    onValue(pRef, handleSnapshot);
-
-    return () => off(pRef, "value", handleSnapshot);
+    const unsubscribe = onValue(pRef, handleSnapshot);
+    return unsubscribe;
 
   },
 
@@ -341,11 +348,8 @@ const chatService = {
       callback({ blockedUsers, blockedBy });
     };
 
-    onValue(myBlocksRef, handleMyBlocks);
-
-    return () => {
-      off(myBlocksRef, "value", handleMyBlocks);
-    };
+    const unsubscribe = onValue(myBlocksRef, handleMyBlocks);
+    return unsubscribe;
   }
 
 };

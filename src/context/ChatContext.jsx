@@ -123,15 +123,15 @@ export function ChatProvider({ children }) {
   // NÃO depende de currentRoom — evita auto-leave ao trocar sala.
   // ======================
 
-  const userUid = user?.uid;
-  const userName = user?.name;
-  const userNickname = user?.nickname;
-  const userAvatar = user?.avatar;
-
   useEffect(() => {
-    if (!userUid) return;
+    if (!user?.uid) return;
 
-    const userData = { uid: userUid, name: userNickname || userName, nickname: userNickname, avatar: userAvatar };
+    const userData = { 
+      uid: user.uid, 
+      name: user.nickname || user.name, 
+      nickname: user.nickname, 
+      avatar: user.avatar 
+    };
 
     chatService.setPresence("geral", userData).then(cleanup => {
       presenceCleanups.current["geral"] = cleanup;
@@ -144,7 +144,7 @@ export function ChatProvider({ children }) {
       });
       presenceCleanups.current = {};
     };
-  }, [userUid, userName, userNickname, userAvatar]);
+  }, [user?.uid]);
 
   // ======================
   // NOTIFICAÇÕES (Background Listeners)

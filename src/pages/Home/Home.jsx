@@ -147,7 +147,7 @@ function Home() {
         onHome={() => navigate(ROUTES.HOME)}
         onSearch={handleDrawerSearch}
         onProfile={() => navigate(ROUTES.PROFILE)}
-        onPremium={() => navigate(ROUTES.PREMIUM)}
+        onPremium={() => navigate(ROUTES.PROFILE)}
         onLogout={logout}
         onAbout={() => { setDrawerOpen(false); navigate(ROUTES.ABOUT); }}
         onPrivacy={() => { setDrawerOpen(false); navigate(ROUTES.PRIVACY); }}

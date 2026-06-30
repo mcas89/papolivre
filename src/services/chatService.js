@@ -17,7 +17,6 @@ import {
   onDisconnect,
   remove,
   get,
-  equalTo,
 } from "firebase/database";
 
 import { rtdb } from "../firebase/config";
@@ -118,31 +117,36 @@ const chatService = {
   // -------------------------
 
   async sendMessage(roomId = "general", messageData) {
-
     const newMessage = {
       roomId,
-      timestamp:    serverTimestamp(),
-      private:      messageData.private      || false,
-      targetUser:   messageData.targetUser   || null,
+      timestamp: serverTimestamp(),
+      private: messageData.private || false,
+      targetUser: messageData.targetUser || null,
       targetUserName: messageData.targetUserName || null,
-      userId:       messageData.userId,
-      userName:     messageData.userName,
-      userAvatar:   messageData.userAvatar   || null,
-      text:         messageData.text,
-      type:         messageData.type         || "text",
+      userId: messageData.userId,
+      userName: messageData.userName,
+      userAvatar: messageData.userAvatar || null,
+      text: messageData.text,
+      type: messageData.type || "text",
     };
-
-    const pushRef = await push(messagesRef(roomId), newMessage);
-
-    // Sistema de auto-limpeza (client-side prune): 
-    // Como não há Cloud Functions, 1 em cada 5 mensagens enviadas (20% de chance)
-    // irá acionar a varredura para apagar mensagens velhas (além das 100) da sala.
+    console.log("=== BEFORE PUSH ===");
+    console.log("ROOM ID:", roomId);
+    console.log("DATABASE URL:", rtdb.app.options.databaseURL);
+    console.log("MESSAGE OBJECT:", newMessage);
+    let pushRef;
+    try {
+      pushRef = await push(messagesRef(roomId), newMessage);
+      console.log("=== PUSH SUCCESS ===");
+      console.log("KEY:", pushRef.key);
+      console.log("PATH:", pushRef.toString());
+    } catch (error) {
+      console.error("=== PUSH ERROR ===", error);
+      throw error;
+    }
     if (Math.random() < 0.20) {
       this.pruneMessages(roomId, 100);
     }
-
     return { id: pushRef.key, ...newMessage };
-
   },
 
   // -------------------------
@@ -174,35 +178,56 @@ const chatService = {
   },
 
   // -------------------------
-  // Escutar apenas menções diretas (Respostas/Privado)
-  // Retorna função de unsubscribe
+  // Escutar mensagens diretas em background (notificações)
+  // Usa orderByChild("timestamp") — índice já existente e funcional.
+  // Filtra targetUser no cliente (sem query equalTo, sem índice extra, sem 403).
   // -------------------------
   subscribeToMentions(roomId, userId, callback) {
     if (!roomId || !userId) return () => {};
-
+    const listenerPath = `rooms/${roomId}/messages`;
+    console.log("SUBSCRIBE QUERY PATH", listenerPath);
+    // Mesma query do subscribe() principal — índice de timestamp já existe
     const q = query(
       messagesRef(roomId),
-      orderByChild("targetUser"),
-      equalTo(userId),
+      orderByChild("timestamp"),
       limitToLast(1)
     );
 
-    let isInitial = true;
+
+    let lastSeenKey = null;
+    let initialized = false;
 
     const handleSnapshot = (snapshot) => {
+      console.log("MENTION SNAPSHOT", snapshot.val());
+      if (!snapshot.exists()) {
+        initialized = true;
+        return;
+      }
+
+      let latestKey = null;
       let latestMsg = null;
       snapshot.forEach((child) => {
-        latestMsg = { id: child.key, ...child.val() };
+        latestKey = child.key;
+        latestMsg = child.val();
       });
-      if (latestMsg && !isInitial) {
-        callback(latestMsg);
+
+      if (!initialized) {
+        // Primeira chamada: memoriza a chave histórica, não notifica
+        lastSeenKey = latestKey;
+        initialized = true;
+        return;
       }
-      isInitial = false;
+
+      // Chamadas seguintes: qualquer mensagem nova (exceto do próprio usuário)
+      if (latestKey && latestKey !== lastSeenKey) {
+        lastSeenKey = latestKey;
+        if (latestMsg?.userId !== userId) {
+          callback();
+        }
+      }
     };
 
-    // onChildAdded é melhor aqui pois só dispara para novos itens ou o último existente
     onValue(q, handleSnapshot);
-
     return () => off(q, "value", handleSnapshot);
   },
 

@@ -10,6 +10,7 @@ import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "../firebase/config";
 import chatService    from "../services/chatService";
 import { useAuth }   from "./AuthContext";
+import { ROUTES }    from "../constants/routes";
 
 const ChatContext = createContext();
 
@@ -26,16 +27,15 @@ export function ChatProvider({ children }) {
   const [messages,     setMessages]     = useState([]);
   const [onlineUsers,  setOnlineUsers]  = useState([]);
   const [loading,      setLoading]      = useState(true);
-  const [unreadRooms,  setUnreadRooms]  = useState([]);
+  const [unreadRooms,  setUnreadRooms]  = useState({});
 
-  // ======================
-  // CONTROLE DE NOTIFICAÇÕES DE FUNDO
-  // ======================
   const lastViewedAt = useRef({});
   const currentRoomRef = useRef("geral");
 
-  // Ref para guardar cleanup de presença (evita duplo registro)
-  const presenceCleanupRef = useRef(null);
+  // Map de cleanup functions de presença por sala: { [roomId]: cleanupFn }
+  // Isso NÃO é fonte de verdade — é bookkeeping técnico, atualizado
+  // sempre junto com connectedRooms nos mesmos métodos (joinRoom/leaveRoom).
+  const presenceCleanups = useRef({});
 
   // ======================
   // CARREGAMENTO INICIAL + SUBSCRIBE MSGS
@@ -51,7 +51,7 @@ export function ChatProvider({ children }) {
     currentRoomRef.current = currentRoom;
 
     // Remove sala atual das não lidas e atualiza o timestamp
-    setUnreadRooms(prev => prev.filter(r => r !== currentRoom));
+    setUnreadRooms(prev => { const {[currentRoom]: _, ...rest} = prev; return rest; });
     lastViewedAt.current[currentRoom] = Date.now();
 
     // Carrega histórico e já liga o listener de tempo real
@@ -103,7 +103,7 @@ export function ChatProvider({ children }) {
   }, [currentRoom]);
 
   // ======================
-  // PRESENÇA (usuários online)
+  // PRESENÇA (usuários online) — exibe lista de online DA SALA ATUAL na UI
   // ======================
 
   useEffect(() => {
@@ -118,59 +118,69 @@ export function ChatProvider({ children }) {
   }, [currentRoom]);
 
   // ======================
-  // REGISTRAR PRESENÇA DO USUÁRIO
+  // REGISTRAR PRESENÇA INICIAL (sala "geral")
+  // Presença em outras salas é registrada dentro de joinRoom().
+  // NÃO depende de currentRoom — evita auto-leave ao trocar sala.
   // ======================
 
+  const userUid = user?.uid;
+  const userName = user?.name;
+  const userNickname = user?.nickname;
+  const userAvatar = user?.avatar;
+
   useEffect(() => {
+    if (!userUid) return;
 
-    if (!user) return;
+    const userData = { uid: userUid, name: userNickname || userName, nickname: userNickname, avatar: userAvatar };
 
-    let cleanup = null;
-
-    chatService.setPresence(currentRoom, user).then((fn) => {
-      cleanup = fn;
-      presenceCleanupRef.current = fn;
-    });
+    chatService.setPresence("geral", userData).then(cleanup => {
+      presenceCleanups.current["geral"] = cleanup;
+    }).catch(err => console.error("Erro presença geral:", err));
 
     return () => {
-      if (cleanup) cleanup();
+      // Cleanup ALL presences on unmount (logout, close app, etc.)
+      Object.entries(presenceCleanups.current).forEach(([, fn]) => {
+        try { fn(); } catch(e) { /* best effort */ }
+      });
+      presenceCleanups.current = {};
     };
-
-  }, [currentRoom, user]);
+  }, [userUid, userName, userNickname, userAvatar]);
 
   // ======================
   // NOTIFICAÇÕES (Background Listeners)
+  // Detecta mensagens novas em salas conectadas mas não focadas.
+  // Dependência serializada em string para evitar loop infinito por referência de array.
   // ======================
+  const connectedRoomsKey = user?.connectedRooms?.join(",") || "";
 
   useEffect(() => {
-    if (!user?.uid || !user?.connectedRooms || user.connectedRooms.length === 0) return;
+    if (!user?.uid || !connectedRoomsKey) return;
 
+    // Constrói o conjunto de salas conectadas (connectedRooms do Firestore).
+    // NÃO inclui currentRoom aqui — isso evita destruir/recriar todos os listeners
+    // a cada troca de sala. O check de "estou vendo esta sala?" é feito via
+    // currentRoomRef (ref) dentro do callback, que não precisa estar nos deps.
+    const rooms = connectedRoomsKey.split(",").filter(Boolean);
     const unsubs = [];
 
-    user.connectedRooms.forEach((roomId) => {
-      // Inicializa o tempo se nunca foi visto nesta sessão
-      if (!lastViewedAt.current[roomId]) {
-        lastViewedAt.current[roomId] = Date.now();
-      }
-
-      const unsub = chatService.subscribeToMentions(roomId, user.uid, (msg) => {
-        if (!msg) return;
-
-        // Se a mensagem nova chegou e nós NÃO estivermos na sala no momento, notifica!
-        if (roomId !== currentRoomRef.current) {
-          setUnreadRooms((prev) => {
-            if (!prev.includes(roomId)) {
-              return [...prev, roomId];
-            }
-            return prev;
-          });
+    rooms.forEach((roomId) => {
+      const unsub = chatService.subscribeToMentions(roomId, user.uid, () => {
+        // Só suprime notificação se o usuário está OLHANDO esta sala na tela neste momento.
+        // Em multi-sala: o usuário está conectado em várias, mas visualiza uma por vez.
+        // Usa currentRoomRef (ref) em vez de currentRoom (state) para evitar stale closure.
+        const isViewingThisRoom = (
+          roomId === currentRoomRef.current &&
+          window.location.pathname === ROUTES.ROOM
+        );
+        if (!isViewingThisRoom) {
+          setUnreadRooms(prev => ({ ...prev, [roomId]: (prev[roomId] || 0) + 1 }));
         }
       });
       unsubs.push(unsub);
     });
 
     return () => unsubs.forEach(fn => fn());
-  }, [user?.uid, user?.connectedRooms]);
+  }, [user?.uid, connectedRoomsKey]);
 
   // ======================
   // TROCAR DE SALA
@@ -178,9 +188,22 @@ export function ChatProvider({ children }) {
 
   async function joinRoom(roomId) {
 
-    // 1. Limite de salas conectadas simultaneamente (somente se não estiver conectado ainda)
+    // 1. Resolver geo ANTES de qualquer verificação de ID
+    let targetRoomId = roomId;
+    if (roomId === "pessoas_proximas") {
+      const location = user?.location;
+      if (!location || !location.latitude || !location.longitude) {
+        return { success: false, error: "SEM_GEOLOCALIZACAO" };
+      }
+      const geoStep = 0.18;
+      const latIndex = Math.round(location.latitude / geoStep);
+      const lngIndex = Math.round(location.longitude / geoStep);
+      targetRoomId = `geo_${latIndex}_${lngIndex}`;
+    }
+
+    // 2. Limite de salas (usa targetRoomId — ID já resolvido)
     const connectedRoomIds = user?.connectedRooms || [];
-    const isNewRoom = !connectedRoomIds.includes(roomId);
+    const isNewRoom = !connectedRoomIds.includes(targetRoomId);
 
     if (isNewRoom) {
       const maxRooms = user?.isPremium ? 5 : 3;
@@ -189,21 +212,9 @@ export function ChatProvider({ children }) {
       }
     }
 
-    // 2. Se for sala de geolocalização, resolvemos para o ID do quadrante do usuário
-    let targetRoomId = roomId;
-    if (roomId === "pessoas_proximas") {
-      const location = user?.location;
-      if (!location || !location.latitude || !location.longitude) {
-        return { success: false, error: "SEM_GEOLOCALIZACAO" };
-      }
-      const geoStep = 0.18; // equivalente a ~20km de precisão
-      const latIndex = Math.round(location.latitude / geoStep);
-      const lngIndex = Math.round(location.longitude / geoStep);
-      targetRoomId = `geo_${latIndex}_${lngIndex}`;
-    }
-
-    // 3. Se já estamos NESSA sala exata, não precisa fazer nada — apenas navegar
+    // 3. Se já estamos NESSA sala exata, limpa unread e retorna
     if (targetRoomId === currentRoom) {
+      setUnreadRooms(prev => { const { [targetRoomId]: _, ...rest } = prev; return rest; });
       return { success: true, targetRoomId };
     }
 
@@ -214,22 +225,31 @@ export function ChatProvider({ children }) {
       return { success: false, error: "SALA_CHEIA", limit: maxLimit };
     }
 
-    // 5. Executa a entrada real
-    if (presenceCleanupRef.current) {
-      await presenceCleanupRef.current();
-      presenceCleanupRef.current = null;
-    }
-
+    // 5. Atualizar sala ativa na UI
     setCurrentRoom(targetRoomId);
 
-    // Salva a sala nas conectadas do usuário no Firestore
+    // 6. Registrar presença nesta sala (SEM remover de outras salas)
+    if (user?.uid) {
+      const userData = { uid: user.uid, name: user.nickname || user.name, nickname: user.nickname, avatar: user.avatar };
+      try {
+        const cleanup = await chatService.setPresence(targetRoomId, userData);
+        presenceCleanups.current[targetRoomId] = cleanup;
+      } catch (err) {
+        console.error("Erro ao registrar presença:", err);
+      }
+    }
+
+    // 7. Limpar unread desta sala
+    setUnreadRooms(prev => { const { [targetRoomId]: _, ...rest } = prev; return rest; });
+
+    // 8. Persistir no Firestore (connectedRooms) — só se for sala nova
     if (user?.uid && isNewRoom) {
       try {
         await updateDoc(doc(db, "users", user.uid), {
-          connectedRooms: arrayUnion(roomId)
+          connectedRooms: arrayUnion(targetRoomId)
         });
 
-        // === MENSAGEM DE ENTRADA (Apenas quando conecta na sala) ===
+        // Mensagem de entrada (apenas quando conecta na sala pela primeira vez)
         if (targetRoomId !== "geral") {
           chatService.sendMessage(targetRoomId, {
             userId: "system",
@@ -245,7 +265,6 @@ export function ChatProvider({ children }) {
     }
 
     return { success: true, targetRoomId };
-
   }
 
   // ======================
@@ -269,18 +288,20 @@ export function ChatProvider({ children }) {
   }
 
   // ======================
-  // SAIR DA SALA
+  // SAIR DA SALA (aceita roomId explícito — não depende de currentRoom)
   // ======================
 
-  async function leaveRoom() {
+  async function leaveRoom(roomId = null) {
     if (!user?.uid) return;
 
-    // Remove a sala conectada atual do array no Firestore
-    const roomIdToLeave = currentRoom?.startsWith("geo_") ? "pessoas_proximas" : currentRoom;
+    // Sala a sair: parâmetro explícito OU sala atual (fallback para compatibilidade)
+    const actualRoomId = roomId || currentRoom;
+    // Usa o mesmo ID para tudo — sem conversão geo_ → pessoas_proximas
+    const firestoreRoomId = actualRoomId;
 
-    // === MENSAGEM DE SAÍDA (Apenas quando DESCONECTA da sala definitivamente) ===
-    if (currentRoom && currentRoom !== "geral") {
-      chatService.sendMessage(currentRoom, {
+    // Mensagem de saída
+    if (actualRoomId && actualRoomId !== "geral") {
+      chatService.sendMessage(actualRoomId, {
         userId: "system",
         userName: "Sistema",
         userAvatar: "🚪",
@@ -289,21 +310,30 @@ export function ChatProvider({ children }) {
       }).catch(() => {});
     }
 
-    if (presenceCleanupRef.current) {
-      await presenceCleanupRef.current();
-      presenceCleanupRef.current = null;
+    // Remover presença APENAS desta sala específica
+    if (presenceCleanups.current[actualRoomId]) {
+      try {
+        await presenceCleanups.current[actualRoomId]();
+      } catch (err) {
+        console.error("Erro ao remover presença:", err);
+      }
+      delete presenceCleanups.current[actualRoomId];
     }
 
+    // Remover do Firestore (connectedRooms)
     try {
       const { arrayRemove } = await import("firebase/firestore");
       await updateDoc(doc(db, "users", user.uid), {
-        connectedRooms: arrayRemove(roomIdToLeave)
+        connectedRooms: arrayRemove(firestoreRoomId)
       });
     } catch (err) {
       console.error("Erro ao sair da sala:", err);
     }
 
-    setCurrentRoom("geral"); // volta para um ID default seguro para não quebrar listeners
+    // Se saiu da sala que estava visualizando, volta para geral
+    if (actualRoomId === currentRoom) {
+      setCurrentRoom("geral");
+    }
   }
 
   // ======================
@@ -311,26 +341,28 @@ export function ChatProvider({ children }) {
   // ======================
   
   useEffect(() => {
-    if (!user || currentRoom === "geral") return;
+    if (!user?.uid) return;
 
-    // 1. Desconectar ao fechar a aba/aplicativo
-    const handleUnload = (e) => {
-      // Como o unload é síncrono e não podemos esperar Promises, usamos o onDisconnect do RTDB
-      // Mas para o Firestore tentamos um fechamento "best effort"
-      leaveRoom(); 
+    // 1. Cleanup de presença ao fechar a aba/aplicativo
+    // (RTDB onDisconnect é o backup real para fechamentos abruptos)
+    const handleUnload = () => {
+      Object.values(presenceCleanups.current).forEach(fn => { try { fn(); } catch(e) { /* best effort */ } });
+      presenceCleanups.current = {};
     };
     window.addEventListener("beforeunload", handleUnload);
 
-    // 2. Desconectar por inatividade (ex: 15 minutos sem mexer no mouse/tela)
-    const INACTIVITY_MS = 15 * 60 * 1000; // 15 minutos
+    // 2. Desconectar por inatividade (15 minutos sem interação)
+    const INACTIVITY_MS = 15 * 60 * 1000;
     let idleTimer;
 
     const resetIdleTimer = () => {
       clearTimeout(idleTimer);
       idleTimer = setTimeout(() => {
-        leaveRoom();
+        // Limpar TODAS as presenças de todas as salas
+        Object.values(presenceCleanups.current).forEach(fn => { try { fn(); } catch(e) { /* best effort */ } });
+        presenceCleanups.current = {};
         alert("Você saiu da sala por inatividade.");
-        window.location.href = "/"; // redireciona para home
+        window.location.href = "/";
       }, INACTIVITY_MS);
     };
 
@@ -349,7 +381,7 @@ export function ChatProvider({ children }) {
       window.removeEventListener("scroll", resetIdleTimer);
       clearTimeout(idleTimer);
     };
-  }, [user, currentRoom]);
+  }, [user?.uid]);
 
   // ======================
   // BLOQUEIO DE USUÁRIOS

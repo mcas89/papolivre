@@ -16,7 +16,7 @@ import { requestApproximateLocation } from "../../utils/location";
 
 function Login() {
 
-  const { login, loginAnonymous } = useAuth();
+  const { login, loginAnonymous, resetPassword } = useAuth();
   const navigate  = useNavigate();
 
   const [email,       setEmail]       = useState("");
@@ -25,6 +25,9 @@ function Login() {
   const [loadingAnon, setLoadingAnon] = useState(false);
   const [loadingForm, setLoadingForm] = useState(false);
   const [error,       setError]       = useState("");
+
+  const [isResetting, setIsResetting] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   // Estados do Modal Anônimo
   const [showAnonModal, setShowAnonModal] = useState(false);
@@ -124,6 +127,33 @@ function Login() {
   }
 
   // =====================================================
+  // RECUPERAÇÃO DE SENHA
+  // =====================================================
+  async function handleResetPassword(e) {
+    e.preventDefault();
+    if (!email) {
+      setError("Por favor, preencha seu e-mail para recuperar a senha.");
+      return;
+    }
+    setLoadingForm(true);
+    setError("");
+    setResetSuccess(false);
+    try {
+      await resetPassword(email);
+      setResetSuccess(true);
+    } catch (err) {
+      const msg = err?.code === "auth/user-not-found"
+        ? "Nenhuma conta encontrada com este e-mail."
+        : err?.code === "auth/invalid-email"
+        ? "E-mail inválido."
+        : "Erro ao enviar e-mail. Tente novamente.";
+      setError(msg);
+    } finally {
+      setLoadingForm(false);
+    }
+  }
+
+  // =====================================================
   // RENDER
   // =====================================================
   return (
@@ -139,15 +169,22 @@ function Login() {
           <p className="login-subtitle">Entre e comece a conversar</p>
         </div>
 
-        {/* ERRO GLOBAL */}
+        {/* ERRO / SUCESSO GLOBAL */}
         {error && (
           <div className="login-error">
             <span>{error}</span>
           </div>
         )}
+        {resetSuccess && (
+          <div className="login-success" style={{ color: "#2ecc71", background: "rgba(46, 204, 113, 0.1)", padding: "12px", borderRadius: "8px", textAlign: "center", marginBottom: "16px", fontSize: "0.9rem" }}>
+            E-mail de recuperação enviado! Verifique sua caixa de entrada.
+          </div>
+        )}
 
-        {/* BOTÃO ENTRAR SEM CADASTRO */}
-        <button
+        {!isResetting ? (
+          <>
+            {/* BOTÃO ENTRAR SEM CADASTRO */}
+            <button
           className="btn-anon"
           onClick={handleAnonymousLogin}
           disabled={loadingAnon}
@@ -206,7 +243,50 @@ function Login() {
             {loadingForm ? "Entrando..." : "Entrar"}
           </Button>
 
+          <div style={{ textAlign: "center", marginTop: "12px" }}>
+            <button
+              type="button"
+              className="reset-pass-btn"
+              onClick={() => { setIsResetting(true); setError(""); setResetSuccess(false); }}
+              style={{ background: "none", border: "none", color: "rgba(255,255,255,0.6)", fontSize: "0.85rem", cursor: "pointer", textDecoration: "underline" }}
+            >
+              Esqueci minha senha
+            </button>
+          </div>
+
         </form>
+        </>
+        ) : (
+          <form className="login-form" onSubmit={handleResetPassword} noValidate>
+            <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "0.9rem", textAlign: "center", marginBottom: "16px" }}>
+              Digite seu e-mail abaixo e enviaremos um link para você redefinir sua senha.
+            </p>
+            <div className="input-group">
+              <Mail size={16} />
+              <Input
+                name="email"
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setError(""); }}
+              />
+            </div>
+            
+            <Button type="submit" variant="primary" full disabled={loadingForm}>
+              {loadingForm ? "Enviando..." : "Enviar link de recuperação"}
+            </Button>
+            
+            <div style={{ textAlign: "center", marginTop: "12px" }}>
+              <button
+                type="button"
+                onClick={() => { setIsResetting(false); setError(""); setResetSuccess(false); }}
+                style={{ background: "none", border: "none", color: "rgba(255,255,255,0.6)", fontSize: "0.85rem", cursor: "pointer", textDecoration: "underline" }}
+              >
+                Voltar para o login
+              </button>
+            </div>
+          </form>
+        )}
 
         {/* FOOTER */}
         <div className="login-footer">

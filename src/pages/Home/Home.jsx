@@ -169,7 +169,8 @@ function Home() {
         user={user}
         onMenu={() => setDrawerOpen(true)}
         onRooms={() => setRoomsOpen(true)}
-        unreadCount={unreadRooms?.length || 0}
+        unreadRooms={unreadRooms}
+        unreadCount={Object.values(unreadRooms).reduce((sum, cnt) => sum + cnt, 0)}
         onNotifications={() => navigate(ROUTES.NOTIFICATIONS)}
         searchOpen={searchOpen}
         onSearchToggle={handleSearchToggle}

@@ -1,4 +1,5 @@
 import "./MessageItem.css";
+import { AlertTriangle } from "lucide-react";
 
 function formatTime(timestamp) {
 
@@ -16,6 +17,7 @@ function MessageItem({
   currentUserId,
   onSelectUser,
   selectedUserId,
+  onReportMessage,
 }) {
 
   const isMine = message.userId === currentUserId;
@@ -72,9 +74,20 @@ function MessageItem({
           <span className="message-name">
             {hasTarget ? `${message.userName} 📢 ${message.targetUserName}` : `${message.userName} 📢 todos`}
           </span>
-          <span className="message-time">
-            {formatTime(message.createdAt || message.timestamp)}
-          </span>
+          <div className="message-header-right">
+            <span className="message-time">
+              {formatTime(message.createdAt || message.timestamp)}
+            </span>
+            {!isMine && (
+              <button 
+                className="report-btn" 
+                onClick={() => onReportMessage(message)}
+                title="Denunciar mensagem"
+              >
+                <AlertTriangle size={14} />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="message-body">

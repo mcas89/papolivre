@@ -10,7 +10,15 @@ import { useAuth } from "../../../context/AuthContext";
 import { ROUTES } from "../../../constants/routes";
 import PremiumLimitModal from "../../ui/PremiumLimitModal/PremiumLimitModal";
 
-function MyRoomsPopup({ open, onClose, unreadRooms = [] }) {
+function MyRoomsPopup({ open, onClose, unreadRooms = {} }) {
+
+  // ... (rest of code unchanged up to badge rendering)
+  // In badge rendering replace includes check with count lookup
+  //
+  //   {!isActive && unreadRooms[room.id] > 0 && (
+  //     <span className="badge badge--unread">{unreadRooms[room.id]} Nova(s) Msg</span>
+  //   )}
+
 
   const navigate                    = useNavigate();
   const { joinRoom, currentRoom, onlineUsers } = useChat();
@@ -42,14 +50,14 @@ function MyRoomsPopup({ open, onClose, unreadRooms = [] }) {
   // Filtra apenas as salas que o usuário está conectado
   const connectedRoomIds = user?.connectedRooms || [];
   const connectedRooms = connectedRoomIds.map(id => {
-    if (id === "pessoas_proximas") {
-      const isCurrentGeo = currentRoom?.startsWith("geo_");
+    if (id.startsWith("geo_")) {
+      const isCurrentGeo = currentRoom === id;
       return {
-        id: "pessoas_proximas",
+        id,
         icon: "📍",
         name: "Pessoas Próximas",
         description: "Pessoas na sua região",
-        online: isCurrentGeo ? onlineUsers.length : 0 // só sabemos o online exato se for a sala atual
+        online: isCurrentGeo ? onlineUsers.length : 0
       };
     }
     return rooms.find(r => r.id === id);
@@ -138,8 +146,8 @@ function MyRoomsPopup({ open, onClose, unreadRooms = [] }) {
                 {isActive && (
                   <span className="badge badge--active">Atual</span>
                 )}
-                {!isActive && unreadRooms.includes(room.id) && (
-                  <span className="badge badge--unread">1 Nova Msg</span>
+                {!isActive && unreadRooms[room.id] > 0 && (
+                  <span className="badge badge--unread">{unreadRooms[room.id]} Nova(s) Msg</span>
                 )}
 
               </div>

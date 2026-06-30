@@ -1,0 +1,26 @@
+{
+  "rules": {
+    "rooms": {
+      "$roomId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "messages": {
+          ".indexOn": ["timestamp", "targetUser"]
+        }
+      }
+    },
+    "blocks": {
+      ".read": "auth != null",
+      "$userId": {
+        "blocked": {
+           ".write": "auth != null && auth.uid == $userId"
+        },
+        "blockedBy": {
+           "$blockerId": {
+              ".write": "auth != null && auth.uid == $blockerId"
+           }
+        }
+      }
+    }
+  }
+}

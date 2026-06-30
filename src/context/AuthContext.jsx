@@ -7,6 +7,8 @@ import {
   signInAnonymously,
   signOut,
   updateProfile,
+  sendPasswordResetEmail,
+  deleteUser,
 } from "firebase/auth";
 
 import {
@@ -53,9 +55,12 @@ export function AuthProvider({ children }) {
       }
 
       if (firebaseUser) {
-        // Escuta perfil em tempo real no Firestore
         const userDocRef = doc(db, "users", firebaseUser.uid);
         
+        // Atualiza lastLogin apenas ao abrir o app (uso ativo)
+        setDoc(userDocRef, { lastLogin: serverTimestamp() }, { merge: true }).catch(() => {});
+
+        // Escuta perfil em tempo real no Firestore
         unsubFirestore = onSnapshot(userDocRef, (docSnap) => {
           if (docSnap.exists()) {
             const data = docSnap.data();
@@ -70,6 +75,7 @@ export function AuthProvider({ children }) {
               email:  firebaseUser.email || "",
               avatar: firebaseUser.photoURL || null,
               anonymous: firebaseUser.isAnonymous,
+              isAnonymous: firebaseUser.isAnonymous,
               connectedRooms: [],
               credits: 0,
               proUntil: null,
@@ -95,45 +101,7 @@ export function AuthProvider({ children }) {
 
   }, []);
 
-  // ----------------------------------------------------------
-  // LIMPEZA DE ANÔNIMOS INATIVOS (roda uma vez ao abrir o app)
-  // Apaga os perfis do Firestore de usuários anônimos que não
-  // fazem login há mais de 24 horas.
-  // Nota: o registro no Firebase Auth permanece, mas fica inativo
-  // e sem dados no Firestore (o app trata esse caso graciosamente).
-  // ----------------------------------------------------------
-  useEffect(() => {
-    async function cleanupStaleAnonymous() {
-      try {
-        const cutoffMillis = Date.now() - 24 * 60 * 60 * 1000;
-        const q = query(
-          collection(db, "users"),
-          where("anonymous", "==", true)
-        );
-        const snap = await getDocs(q);
-        
-        const deletes = [];
-        snap.docs.forEach((d) => {
-          const data = d.data();
-          // Se lastSeen for nulo (perfil muito antigo) ou menor que o cutoff, apaga
-          const lastSeenMillis = data.lastSeen ? data.lastSeen.toMillis() : 0;
-          if (lastSeenMillis < cutoffMillis) {
-            deletes.push(deleteDoc(d.ref));
-          }
-        });
-        
-        await Promise.all(deletes);
-        if (deletes.length > 0) {
-          console.log(`[Auth] ${deletes.length} perfis anônimos inativos removidos do Firestore.`);
-        }
-      } catch (err) {
-        // Falha silenciosa — não impede o uso do app
-        console.warn("[Auth] Erro na limpeza de anônimos:", err);
-      }
-    }
 
-    cleanupStaleAnonymous();
-  }, []);
 
 
   // ----------------------------------------------------------
@@ -164,9 +132,10 @@ export function AuthProvider({ children }) {
       nickname:  nickname || "Anônimo",
       avatar:    avatar   || "👦🏼",
       anonymous: true,
+      isAnonymous: true,
       location:  location || null,
       createdAt: serverTimestamp(),
-      lastSeen:  serverTimestamp(),
+      lastLogin: serverTimestamp(),
       connectedRooms: [],
       credits: 0,
       proUntil: null,
@@ -205,7 +174,9 @@ export function AuthProvider({ children }) {
       location:  location || null,
       avatar:    null,
       anonymous: false,
+      isAnonymous: false,
       createdAt: serverTimestamp(),
+      lastLogin: serverTimestamp(),
       connectedRooms: [],
       credits: 0,
       proUntil: null,
@@ -219,7 +190,28 @@ export function AuthProvider({ children }) {
   // LOGOUT
   // ----------------------------------------------------------
   async function logout() {
+    const currentUser = auth.currentUser;
+    if (currentUser?.isAnonymous) {
+      try {
+        // Remove do Firestore
+        await deleteDoc(doc(db, "users", currentUser.uid));
+        // Remove do Firebase Auth
+        await deleteUser(currentUser);
+        // O deleteUser já faz sign out automático e limpa a sessão.
+        return;
+      } catch (err) {
+        console.error("Erro ao remover doc/auth de usuário anônimo:", err);
+      }
+    }
     await signOut(auth);
+  }
+
+  // ----------------------------------------------------------
+  // RECUPERAÇÃO DE SENHA
+  // ----------------------------------------------------------
+  async function resetPassword(email) {
+    if (!email) throw new Error("E-mail não fornecido.");
+    await sendPasswordResetEmail(auth, email);
   }
 
   // ----------------------------------------------------------
@@ -233,6 +225,7 @@ export function AuthProvider({ children }) {
     loginAnonymous,
     register,
     logout,
+    resetPassword,
   };
 
   return (

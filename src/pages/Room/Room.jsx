@@ -12,6 +12,8 @@ import PrivateReplyBar from "../../components/room/PrivateReplyBar/PrivateReplyB
 import ChatInput from "../../components/room/ChatInput/ChatInput";
 import UsersDrawer from "../../components/room/UsersDrawer/UsersDrawer";
 import MyRoomsPopup from "../../components/home/MyRoomsPopup/MyRoomsPopup";
+import Button from "../../components/ui/Button/Button";
+import reportService from "../../services/reportService";
 
 function Room() {
 
@@ -23,12 +25,18 @@ function Room() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [roomsPopupOpen, setRoomsPopupOpen] = useState(false);
 
+  const [messageToReport, setMessageToReport] = useState(null);
+  const [isReporting, setIsReporting] = useState(false);
+
   function handleSendMessage(data) {
-    sendMessage(data.text, {
+    console.log("TARGET USER", selectedUser);
+    const messageData = {
       private: isPrivateReply && !!data.receiverId,
       targetUser: data.receiverId,
       targetUserName: data.receiverName
-    });
+    };
+    console.log("MESSAGE DATA", messageData);
+    sendMessage(data.text, messageData);
   }
 
   // Filtra msgs para esconder privadas que não são para o usuário atual
@@ -44,6 +52,26 @@ function Room() {
     setIsPrivateReply(false);
   }
 
+  async function handleConfirmReport(reason) {
+    if (!messageToReport || !currentUser) return;
+    setIsReporting(true);
+    try {
+      await reportService.createReport({
+        reportedUser: messageToReport.userId,
+        reportedMessage: messageToReport.text,
+        reportedBy: currentUser.uid,
+        roomId: currentRoom || "unknown",
+        reason
+      });
+      alert("Denúncia enviada com sucesso. Obrigado por ajudar a manter a comunidade segura.");
+    } catch (err) {
+      alert("Erro ao enviar denúncia. Tente novamente.");
+    } finally {
+      setIsReporting(false);
+      setMessageToReport(null);
+    }
+  }
+
   return (
 
     <main className="room">
@@ -51,7 +79,7 @@ function Room() {
       <RoomHeader
         roomName={roomName}
         onlineCount={onlineUsers.length}
-        unreadCount={unreadRooms?.length || 0}
+        unreadCount={Object.values(unreadRooms).reduce((sum, cnt) => sum + cnt, 0)}
         onHome={() => navigate(ROUTES.HOME)}
         onUsers={() => setDrawerOpen(true)}
         onRooms={() => setRoomsPopupOpen(true)}
@@ -66,6 +94,7 @@ function Room() {
           onlineUsers={onlineUsers} 
           selectedUser={selectedUser}
           blockedUsers={blockedUsers}
+          currentUserId={currentUser?.uid}
           onToggleBlock={toggleBlockUser}
           onSelectUser={(user) => {
             setSelectedUser({ userId: user.id, userName: user.name });
@@ -89,6 +118,7 @@ function Room() {
           setIsPrivateReply(true);
         }}
         selectedUserId={selectedUser?.userId}
+        onReportMessage={(msg) => setMessageToReport(msg)}
       />
 
       {/* Wrapper que agrupa reply bar + input → sempre no fundo */}
@@ -111,6 +141,40 @@ function Room() {
         onClose={() => setRoomsPopupOpen(false)} 
         unreadRooms={unreadRooms}
       />
+
+      {/* MODAL DE DENÚNCIA SIMPLES */}
+      {messageToReport && (
+        <>
+          <div className="anon-modal-overlay" onClick={() => !isReporting && setMessageToReport(null)} />
+          <div className="anon-modal">
+            <div className="anon-modal-header">
+              <h2>Denunciar Mensagem</h2>
+              <p>Qual o motivo da denúncia?</p>
+            </div>
+            
+            <div className="anon-modal-actions" style={{ flexDirection: "column", gap: "10px", marginTop: "20px" }}>
+              <Button onClick={() => handleConfirmReport("Spam / Propagandas")} variant="outline" full disabled={isReporting}>
+                Spam / Propagandas
+              </Button>
+              <Button onClick={() => handleConfirmReport("Ofensa / Assédio")} variant="outline" full disabled={isReporting}>
+                Ofensa / Assédio
+              </Button>
+              <Button onClick={() => handleConfirmReport("Conteúdo Inadequado")} variant="outline" full disabled={isReporting}>
+                Conteúdo Inadequado
+              </Button>
+              <button 
+                type="button" 
+                className="btn-cancel-anon" 
+                onClick={() => setMessageToReport(null)}
+                disabled={isReporting}
+                style={{ marginTop: "10px" }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
     </main>
 

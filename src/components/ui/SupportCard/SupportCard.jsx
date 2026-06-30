@@ -12,26 +12,16 @@ function SupportCard({ onClick }) {
       onClick={onClick}
     >
       <div className="support-icon">
-
-        <HeartHandshake size={30} />
-
+        <HeartHandshake size={18} />
       </div>
 
       <div className="support-content">
-
         <h2>Apoie o PapoLivre</h2>
-
-        <p>
-          Sua contribuição ajuda a manter
-          o projeto online.
-        </p>
-
+        <p>Sua contribuição ajuda a manter o projeto online.</p>
       </div>
 
       <div className="support-arrow">
-
-        <ArrowRight size={20} />
-
+        <ArrowRight size={15} />
       </div>
 
     </section>

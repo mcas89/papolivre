@@ -1,14 +1,19 @@
 import "./Premium.css";
 import { useState } from "react";
-import { ArrowLeft, Heart, Copy, Check, Crown } from "lucide-react";
+import { ArrowLeft, Heart, Copy, Check, Crown, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
+import { useAuth } from "../../context/AuthContext";
 
 const PIX_KEY = "marcos.mcas89@gmail.com";
 
 function Premium() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [copied, setCopied] = useState(false);
+
+  // Considera logado com email (não anônimo)
+  const isFullUser = !!user && !user.anonymous && !user.isAnonymous;
 
   function handleCopyPix() {
     navigator.clipboard.writeText(PIX_KEY).then(() => {
@@ -84,14 +89,24 @@ function Premium() {
           <span>Quer mais vantagens?</span>
         </div>
 
-        {/* Botão PRO */}
-        <button
-          className="support-pro-btn"
-          onClick={() => navigate(ROUTES.PROFILE)}
-        >
-          <Crown size={18} />
-          Ver meu Perfil & Créditos PRO
-        </button>
+        {/* Botão PRO — apenas para usuários logados com e-mail */}
+        {isFullUser ? (
+          <button
+            id="support-pro-btn"
+            className="support-pro-btn"
+            onClick={() => navigate(ROUTES.PROFILE)}
+          >
+            <Crown size={18} />
+            Ver meu Perfil &amp; Créditos PRO
+          </button>
+        ) : (
+          <div className="support-login-hint">
+            <Lock size={14} />
+            <span>
+              <strong>Faça login com e-mail</strong> para acessar créditos e vantagens Premium PRO
+            </span>
+          </div>
+        )}
 
         <button
           className="support-home-btn"

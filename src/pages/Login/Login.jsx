@@ -14,8 +14,21 @@ import { ROUTES }  from "../../constants/routes";
 import { useAuth } from "../../context/AuthContext";
 import { requestApproximateLocation } from "../../utils/location";
 
-function Login() {
+const MALE_HAIR_VARIANTS = [
+  'variant01', 'variant02', 'variant03', 'variant05', 'variant09', 'variant10', 
+  'variant11', 'variant12', 'variant14', 'variant15', 'variant17', 'variant18', 
+  'variant21', 'variant22', 'variant24', 'variant25', 'variant26', 'variant29', 
+  'variant30', 'variant32', 'variant34', 'variant35', 'variant36', 'variant37', 
+  'variant38', 'variant40', 'variant41', 'variant42', 'variant45', 'variant47'
+];
 
+const FEMALE_HAIR_VARIANTS = [
+  'variant04', 'variant06', 'variant07', 'variant08', 'variant13', 'variant19', 
+  'variant20', 'variant23', 'variant27', 'variant28', 'variant31', 'variant33', 
+  'variant39', 'variant43', 'variant44', 'variant46', 'variant48'
+];
+
+function Login() {
   const { login, loginAnonymous, resetPassword } = useAuth();
   const navigate  = useNavigate();
 
@@ -76,15 +89,36 @@ function Login() {
     setLoadingAnon(true);
     setAnonOptionError("");
     try {
-      // Gerar seed baseado na escolha
+      // Gerar seed e options baseado na escolha
       let seedStr = `Anon_${Math.floor(Math.random() * 10000)}`;
-      if (selectedAvatar === "homem") seedStr = `Male_${Math.floor(Math.random() * 10000)}`;
-      else if (selectedAvatar === "mulher") seedStr = `Female_${Math.floor(Math.random() * 10000)}`;
+      let optionsObj = {};
+
+      if (selectedAvatar === "homem") {
+        seedStr = `Male_${Math.floor(Math.random() * 10000)}`;
+        const randomHair = MALE_HAIR_VARIANTS[Math.floor(Math.random() * MALE_HAIR_VARIANTS.length)];
+        const hasBeard = Math.random() < 0.3;
+        optionsObj = {
+          hair: [randomHair],
+          beardProbability: hasBeard ? 100 : 0,
+          beard: hasBeard ? [Math.random() < 0.5 ? 'variant01' : 'variant02'] : [],
+          earringsProbability: 0,
+          hairAccessoriesProbability: 0
+        };
+      } else if (selectedAvatar === "mulher") {
+        seedStr = `Female_${Math.floor(Math.random() * 10000)}`;
+        const randomHair = FEMALE_HAIR_VARIANTS[Math.floor(Math.random() * FEMALE_HAIR_VARIANTS.length)];
+        const hasAccessory = Math.random() < 0.3;
+        optionsObj = {
+          hair: [randomHair],
+          beardProbability: 0,
+          hairAccessoriesProbability: hasAccessory ? 100 : 0
+        };
+      }
 
       const newAvatarData = {
         seed: seedStr,
         premium: false,
-        options: {}
+        options: optionsObj
       };
 
       await loginAnonymous({

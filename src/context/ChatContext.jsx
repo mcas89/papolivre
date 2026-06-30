@@ -283,6 +283,7 @@ export function ChatProvider({ children }) {
       private:       options.private      || false,
       targetUser:    options.targetUser   || null,
       targetUserName: options.targetUserName || null,
+      userPremium:   user.isPremium       || false,
     });
 
   }

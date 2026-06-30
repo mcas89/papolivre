@@ -2,13 +2,16 @@ import "./PremiumLimitModal.css";
 import { Crown, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../constants/routes";
+import { useAuth } from "../../../context/AuthContext";
 
 function PremiumLimitModal({ open, onClose, type }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   if (!open) return null;
 
   const isRoomLimit = type === "rooms";
+  const isPremium = !!user?.isPremium;
 
   const handleBecomePremium = () => {
     onClose();
@@ -23,23 +26,31 @@ function PremiumLimitModal({ open, onClose, type }) {
           <X size={20} />
         </button>
 
-        <div className="premium-modal-header">
-          <div className="premium-crown-glow">
-            <Crown size={32} className="premium-modal-crown" />
+        {!(isRoomLimit && isPremium) && (
+          <div className="premium-modal-header">
+            <div className="premium-crown-glow">
+              <Crown size={32} className="premium-modal-crown" />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="premium-modal-body">
           {isRoomLimit ? (
-            <>
-              <h3>Limite de Salas Atingido</h3>
-              <p>
-                Você atingiu o limite máximo de <strong>3 salas conectadas simultaneamente</strong>.
+            isPremium ? (
+              <p style={{ fontSize: "16px", fontWeight: "600", margin: "20px 0", color: "#ffffff" }}>
+                Você já atingiu o limite de 5 salas simultâneas do Premium Pro.
               </p>
-              <p className="premium-modal-highlight">
-                Assine o <strong>Premium Pro</strong> para se conectar a salas ilimitadas!
-              </p>
-            </>
+            ) : (
+              <>
+                <h3>Limite de Salas Atingido</h3>
+                <p>
+                  Você atingiu o limite máximo de <strong>3 salas conectadas simultaneamente</strong>.
+                </p>
+                <p className="premium-modal-highlight">
+                  Assine o <strong>Premium Pro</strong> para se conectar a salas ilimitadas!
+                </p>
+              </>
+            )
           ) : (
             <>
               <h3>Sala de Conversa Lotada</h3>
@@ -54,12 +65,20 @@ function PremiumLimitModal({ open, onClose, type }) {
         </div>
 
         <div className="premium-modal-footer">
-          <button className="btn-become-premium" onClick={handleBecomePremium}>
-            Seja Premium Pro
-          </button>
-          <button className="btn-cancel-premium" onClick={onClose}>
-            Talvez mais tarde
-          </button>
+          {isRoomLimit && isPremium ? (
+            <button className="btn-cancel-premium" onClick={onClose} style={{ width: "100%" }}>
+              Fechar
+            </button>
+          ) : (
+            <>
+              <button className="btn-become-premium" onClick={handleBecomePremium}>
+                Seja Premium Pro
+              </button>
+              <button className="btn-cancel-premium" onClick={onClose}>
+                Talvez mais tarde
+              </button>
+            </>
+          )}
         </div>
       </div>
     </>
@@ -67,3 +86,4 @@ function PremiumLimitModal({ open, onClose, type }) {
 }
 
 export default PremiumLimitModal;
+

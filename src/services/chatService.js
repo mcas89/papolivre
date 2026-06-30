@@ -117,18 +117,19 @@ const chatService = {
   // -------------------------
 
   async sendMessage(roomId = "general", messageData) {
-    const newMessage = {
-      roomId,
-      timestamp: serverTimestamp(),
-      private: messageData.private || false,
-      targetUser: messageData.targetUser || null,
-      targetUserName: messageData.targetUserName || null,
-      userId: messageData.userId,
-      userName: messageData.userName,
-      userAvatar: messageData.userAvatar || null,
-      text: messageData.text,
-      type: messageData.type || "text",
-    };
+     const newMessage = {
+       roomId,
+       timestamp: serverTimestamp(),
+       private: messageData.private || false,
+       targetUser: messageData.targetUser || null,
+       targetUserName: messageData.targetUserName || null,
+       userId: messageData.userId,
+       userName: messageData.userName,
+       userAvatar: messageData.userAvatar || null,
+       text: messageData.text,
+       type: messageData.type || "text",
+       userPremium: messageData.userPremium || false,
+     };
     console.log("=== BEFORE PUSH ===");
     console.log("ROOM ID:", roomId);
     console.log("DATABASE URL:", rtdb.app.options.databaseURL);

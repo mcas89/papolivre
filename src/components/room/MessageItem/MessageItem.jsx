@@ -1,5 +1,5 @@
 import "./MessageItem.css";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Crown } from "lucide-react";
 import UserAvatar from "../../ui/UserAvatar/UserAvatar";
 
 function formatTime(timestamp) {
@@ -67,7 +67,27 @@ function MessageItem({
 
         <div className="message-header">
           <span className="message-name">
-            {hasTarget ? `${message.userName} 📢 ${message.targetUserName}` : `${message.userName} 📢 todos`}
+            {hasTarget ? (
+              <>
+                {message.userName}
+                {!!(message.userPremium || (message.userAvatar && typeof message.userAvatar === 'object' && message.userAvatar.premium)) && (
+                  <span className="msg-premium-badge">
+                    <Crown size={10} /> Premium Pro
+                  </span>
+                )}
+                <span> 📢 {message.targetUserName}</span>
+              </>
+            ) : (
+              <>
+                {message.userName}
+                {!!(message.userPremium || (message.userAvatar && typeof message.userAvatar === 'object' && message.userAvatar.premium)) && (
+                  <span className="msg-premium-badge">
+                    <Crown size={10} /> Premium Pro
+                  </span>
+                )}
+                <span> 📢 todos</span>
+              </>
+            )}
           </span>
           <div className="message-header-right">
             <span className="message-time">

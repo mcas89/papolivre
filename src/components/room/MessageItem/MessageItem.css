@@ -170,3 +170,20 @@
 .message-wrapper.mine .private-tag {
   color: var(--danger);
 }
+
+.msg-premium-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(234, 179, 8, 0.15));
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: var(--gold);
+  margin-left: 6px;
+  vertical-align: middle;
+}

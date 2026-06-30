@@ -225,6 +225,44 @@
   transform: translateY(0);
 }
 
+.studio-select-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.studio-select-group label {
+  font-size: 0.8rem;
+  color: #a78bfa;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.studio-select {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  color: white;
+  padding: 10px 12px;
+  border-radius: 10px;
+  outline: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.2s;
+  width: 100%;
+}
+
+.studio-select:focus {
+  border-color: rgba(139, 92, 246, 0.6);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
+}
+
+.studio-select option {
+  background: #1f142e;
+  color: white;
+}
+
 @media (max-width: 480px) {
   .dicebear-picker-modal {
     max-height: 95vh;

@@ -26,24 +26,8 @@ import {
   ChevronUp,
 } from "lucide-react";
 
-// ── Avatar Sets ────────────────────────────────────────────────
-const FREE_AVATARS = ["👤", "👦🏼", "👧🏽", "🦊"];
-
-const FULL_AVATARS = [
-  // Masculinos
-  "👨🏻", "👨🏽", "👨🏿",
-  "👨🏻‍🦲", "👨🏿‍🦲",
-  "👨🏻‍🦱", "👨🏿‍🦱",
-  "👨🏻‍🦳", "👨🏿‍🦳",
-  // Femininos
-  "👩🏻", "👩🏽", "👩🏿",
-  "👩🏻‍🦰", "👩🏿‍🦰",
-  "👩🏻‍🦱", "👩🏿‍🦱",
-  "👩🏻‍🦳", "👩🏿‍🦳",
-  // Animais
-  "🐱", "🐶", "🐼", "🦁",
-  "🐯", "🐰", "🐻", "🦝",
-];
+import UserAvatar from "../../components/ui/UserAvatar/UserAvatar";
+import DiceBearPicker from "../../components/profile/DiceBearPicker/DiceBearPicker";
 
 // ── Plan perks config ───────────────────────────────────────────
 const FREE_PERKS = [
@@ -69,7 +53,7 @@ function Profile() {
   const credits     = user?.credits || 0;
 
   // Form state
-  const [avatar,    setAvatar]    = useState(user?.avatar   || "👤");
+  const [avatar,    setAvatar]    = useState(user?.avatar   || null);
   const [nickname,  setNickname]  = useState(user?.nickname || user?.name || "");
   const [name,      setName]      = useState(user?.name     || "");
   const [city,      setCity]      = useState(user?.city     || "");
@@ -154,21 +138,24 @@ function Profile() {
             {/* Avatar */}
             <div className="prof-avatar-wrap">
               <div
-                className="prof-avatar"
-                onClick={() => setAvatarOpen(o => !o)}
+                className="prof-avatar-clickable"
+                onClick={() => { if (!isAnonymous) setAvatarOpen(true); }}
                 role="button"
                 aria-label="Trocar avatar"
                 id="profile-avatar-toggle"
+                style={{ cursor: isAnonymous ? 'default' : 'pointer', position: 'relative' }}
               >
-                {avatar}
+                <UserAvatar avatarData={avatar} fallbackUid={user?.uid} size={90} className="prof-avatar-override" />
               </div>
-              <button
-                className="prof-avatar-edit-btn"
-                onClick={() => setAvatarOpen(o => !o)}
-                aria-label="Editar avatar"
-              >
-                <Pencil size={12} />
-              </button>
+              {!isAnonymous && (
+                <button
+                  className="prof-avatar-edit-btn"
+                  onClick={() => setAvatarOpen(true)}
+                  aria-label="Editar avatar"
+                >
+                  <Pencil size={12} />
+                </button>
+              )}
             </div>
 
             {/* Badge de plano */}
@@ -191,58 +178,6 @@ function Profile() {
               <p className="prof-hero__sub">📍 {city}</p>
             )}
           </div>
-
-          {/* ── AVATAR PICKER ─────────────────────────────── */}
-          {avatarOpen && (
-            <div className="prof-avatar-picker">
-              <p className="prof-avatar-picker__label">Escolha seu avatar</p>
-
-              {/* Free avatars — sempre disponíveis */}
-              <div className="prof-avatar-section">
-                <p className="prof-avatar-section__title">Básicos (grátis)</p>
-                <div className="prof-avatar-grid">
-                  {FREE_AVATARS.map(emoji => (
-                    <button
-                      key={emoji}
-                      className={`prof-avatar-btn ${avatar === emoji ? "selected" : ""}`}
-                      onClick={() => { setAvatar(emoji); setAvatarOpen(false); }}
-                    >
-                      {emoji}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Full avatars — bloqueados para anônimos */}
-              <div className="prof-avatar-section">
-                <p className="prof-avatar-section__title">
-                  {isAnonymous ? "🔒 Completos (faça login)" : "Completos"}
-                </p>
-                <div className="prof-avatar-grid">
-                  {FULL_AVATARS.map(emoji => (
-                    <button
-                      key={emoji}
-                      className={`prof-avatar-btn ${avatar === emoji ? "selected" : ""} ${isAnonymous ? "locked" : ""}`}
-                      onClick={() => {
-                        if (isAnonymous) return;
-                        setAvatar(emoji);
-                        setAvatarOpen(false);
-                      }}
-                      title={isAnonymous ? "Faça login para usar" : undefined}
-                    >
-                      {emoji}
-                    </button>
-                  ))}
-                </div>
-                {isAnonymous && (
-                  <p className="prof-avatar-locked-msg">
-                    <Lock size={13} />
-                    Crie uma conta para desbloquear todos os avatares
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* ── CARTEIRA & PLANO (só para logados) ─────────── */}
@@ -486,6 +421,20 @@ function Profile() {
         </button>
 
       </div>
+
+      {/* ── AVATAR PICKER (Outside of .prof-card to avoid stacking context / overflow issues) ── */}
+      {avatarOpen && !isAnonymous && (
+        <DiceBearPicker
+          isPremium={isPremium}
+          initialAvatar={avatar}
+          onClose={() => setAvatarOpen(false)}
+          onSave={(newAvatar) => {
+            setAvatar(newAvatar);
+            setAvatarOpen(false);
+          }}
+        />
+      )}
+
     </main>
   );
 }

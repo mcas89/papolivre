@@ -1,6 +1,7 @@
 // src/components/room/UsersDrawer.jsx
 import "./UsersDrawer.css";
 import { X } from "lucide-react";
+import UserAvatar from "../../ui/UserAvatar/UserAvatar";
 
 const UsersDrawer = ({ onlineUsers, selectedUser, onSelectUser, onClose, blockedUsers = [], onToggleBlock, currentUserId }) => {
 
@@ -31,15 +32,7 @@ const UsersDrawer = ({ onlineUsers, selectedUser, onSelectUser, onClose, blocked
                 style={{ opacity: isBlocked ? 0.5 : 1 }}
               >
                 <div className="user-avatar-wrapper">
-                  {(() => {
-                    const avatar = user.avatar || `https://i.pravatar.cc/150?u=${user.id}`;
-                    const isEmoji = avatar && !avatar.startsWith("http") && !avatar.startsWith("data:") && !avatar.startsWith("/");
-                    return isEmoji ? (
-                      <div className="user-avatar emoji-avatar">{avatar}</div>
-                    ) : (
-                      <img src={avatar} alt={user.name} className="user-avatar" />
-                    );
-                  })()}
+                  <UserAvatar avatarData={user.avatar} fallbackUid={user.id} size={36} className="user-avatar" />
                   <span className="user-status-dot" style={{ background: isBlocked ? "gray" : "" }}></span>
                 </div>
                 <div className="user-info">

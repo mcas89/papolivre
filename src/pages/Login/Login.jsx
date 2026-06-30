@@ -32,15 +32,14 @@ function Login() {
   // Estados do Modal Anônimo
   const [showAnonModal, setShowAnonModal] = useState(false);
   const [anonNickname,  setAnonNickname]  = useState("");
-  const [selectedAvatar, setSelectedAvatar] = useState("👦🏻");
+  const [selectedAvatar, setSelectedAvatar] = useState("homem");
   const [tempLocation,  setTempLocation]  = useState(null);
   const [anonError,     setAnonOptionError] = useState("");
 
-  const anonymousAvatars = [
-    { emoji: "👦🏻", label: "Homem Branco" },
-    { emoji: "👦🏿", label: "Homem Negro" },
-    { emoji: "👧🏻", label: "Mulher Branca" },
-    { emoji: "👧🏿", label: "Mulher Negra" }
+  const anonymousOptions = [
+    { id: "homem", emoji: "👨", label: "Homem" },
+    { id: "mulher", emoji: "👩", label: "Mulher" },
+    { id: "aleatorio", emoji: "🎲", label: "Aleatório" }
   ];
 
   // =====================================================
@@ -77,9 +76,20 @@ function Login() {
     setLoadingAnon(true);
     setAnonOptionError("");
     try {
+      // Gerar seed baseado na escolha
+      let seedStr = `Anon_${Math.floor(Math.random() * 10000)}`;
+      if (selectedAvatar === "homem") seedStr = `Male_${Math.floor(Math.random() * 10000)}`;
+      else if (selectedAvatar === "mulher") seedStr = `Female_${Math.floor(Math.random() * 10000)}`;
+
+      const newAvatarData = {
+        seed: seedStr,
+        premium: false,
+        options: {}
+      };
+
       await loginAnonymous({
         nickname: anonNickname.trim(),
-        avatar: selectedAvatar,
+        avatar: newAvatarData,
         location: tempLocation
       });
       setShowAnonModal(false);
@@ -329,16 +339,17 @@ function Login() {
 
               <div className="anon-avatars-section">
                 <label>Escolha seu Avatar</label>
-                <div className="anon-avatars-grid">
-                  {anonymousAvatars.map((av) => (
+                <div className="anon-avatars-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+                  {anonymousOptions.map((av) => (
                     <button
-                      key={av.emoji}
+                      key={av.id}
                       type="button"
-                      className={`anon-avatar-btn ${selectedAvatar === av.emoji ? "active" : ""}`}
-                      onClick={() => setSelectedAvatar(av.emoji)}
+                      className={`anon-avatar-btn ${selectedAvatar === av.id ? "active" : ""}`}
+                      onClick={() => setSelectedAvatar(av.id)}
                       title={av.label}
                     >
                       <span className="anon-avatar-emoji">{av.emoji}</span>
+                      <span style={{ fontSize: '0.75rem', marginTop: '4px', opacity: 0.8 }}>{av.label}</span>
                     </button>
                   ))}
                 </div>

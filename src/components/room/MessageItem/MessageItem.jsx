@@ -1,5 +1,6 @@
 import "./MessageItem.css";
 import { AlertTriangle } from "lucide-react";
+import UserAvatar from "../../ui/UserAvatar/UserAvatar";
 
 function formatTime(timestamp) {
 
@@ -35,8 +36,7 @@ function MessageItem({
 
   }
 
-  const avatar = message.userAvatar || `https://i.pravatar.cc/150?u=${message.userId}`;
-  const isEmoji = avatar && !avatar.startsWith("http") && !avatar.startsWith("data:") && !avatar.startsWith("/");
+  const avatarData = message.userAvatar;
 
   if (message.type === "system") {
     return (
@@ -50,23 +50,18 @@ function MessageItem({
 
     <div className={`message-wrapper ${isMine ? "mine" : ""} ${isPrivate ? "private" : ""} ${isMyDirectMessage ? "active-conversation" : ""} ${isTargetingMe ? "directed-to-me" : ""}`}>
 
-      {isEmoji ? (
-        <div 
-          className="message-avatar emoji-avatar"
-          onClick={!isMine ? handleSelectUser : undefined}
-          title={!isMine ? "Responder no privado" : ""}
-        >
-          {avatar}
-        </div>
-      ) : (
-        <img 
-          src={avatar} 
-          alt={message.userName} 
-          className="message-avatar" 
-          onClick={!isMine ? handleSelectUser : undefined}
-          title={!isMine ? "Responder no privado" : ""}
+      <div 
+        className="message-avatar-wrap"
+        onClick={!isMine ? handleSelectUser : undefined}
+        title={!isMine ? "Responder no privado" : ""}
+      >
+        <UserAvatar 
+          avatarData={avatarData} 
+          fallbackUid={message.userId} 
+          size={36} 
+          className="message-avatar"
         />
-      )}
+      </div>
 
       <div className="message-bubble">
 

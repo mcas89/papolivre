@@ -1,6 +1,7 @@
 import "./OnlineUsers.css";
 
 import { useChat } from "../../../context/ChatContext";
+import UserAvatar from "../../ui/UserAvatar/UserAvatar";
 
 function OnlineUsers({ isOpen }) {
 
@@ -20,15 +21,7 @@ function OnlineUsers({ isOpen }) {
 
             <div className="avatar-wrapper">
 
-              {(() => {
-                const avatar = user.avatar || `https://i.pravatar.cc/150?u=${user.id}`;
-                const isEmoji = avatar && !avatar.startsWith("http") && !avatar.startsWith("data:") && !avatar.startsWith("/");
-                return isEmoji ? (
-                  <div className="emoji-avatar" style={{width: '100%', height: '100%', borderRadius: '50%'}}>{avatar}</div>
-                ) : (
-                  <img src={avatar} alt={user.name} />
-                );
-              })()}
+              <UserAvatar avatarData={user.avatar} fallbackUid={user.id} size={40} className="online-user-avatar" />
 
               <span className={`status ${user.status || 'online'}`} />
 

@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { getDefaultAvatarData } from "../utils/avatarUtils";
 
 import {
   onAuthStateChanged,
@@ -130,7 +131,7 @@ export function AuthProvider({ children }) {
       uid:       credential.user.uid,
       name:      nickname || "Anônimo",
       nickname:  nickname || "Anônimo",
-      avatar:    avatar   || "👦🏼",
+      avatar:    avatar   || getDefaultAvatarData(credential.user.uid),
       anonymous: true,
       isAnonymous: true,
       location:  location || null,
@@ -144,7 +145,8 @@ export function AuthProvider({ children }) {
     // Atualiza o displayName e photoURL no Auth para compatibilidade
     await updateProfile(credential.user, {
       displayName: nickname || "Anônimo",
-      photoURL: avatar || "👦🏻"
+      // Não salvamos o objeto complexo no photoURL, só a string se for simples
+      photoURL: typeof avatar === 'string' ? avatar : ""
     });
 
     await setDoc(doc(db, "users", credential.user.uid), anonProfile);
@@ -172,7 +174,7 @@ export function AuthProvider({ children }) {
       birthdate,
       age,
       location:  location || null,
-      avatar:    null,
+      avatar:    getDefaultAvatarData(credential.user.uid),
       anonymous: false,
       isAnonymous: false,
       createdAt: serverTimestamp(),

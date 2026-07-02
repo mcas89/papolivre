@@ -17,6 +17,7 @@ import {
   onDisconnect,
   remove,
   get,
+  startAt,
 } from "firebase/database";
 
 import { rtdb } from "../firebase/config";
@@ -157,10 +158,12 @@ const chatService = {
   // -------------------------
 
   subscribe(roomId = "general", callback) {
+    const now = Date.now();
 
     const q = query(
       messagesRef(roomId),
       orderByChild("timestamp"),
+      startAt(now),
       limitToLast(100)
     );
 

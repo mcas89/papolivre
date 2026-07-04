@@ -8,6 +8,7 @@ function Input({
   onChange,
   min,
   max,
+  ...props
 }) {
   return (
     <input
@@ -19,6 +20,7 @@ function Input({
       onChange={onChange}
       min={min}
       max={max}
+      {...props}
     />
   );
 }

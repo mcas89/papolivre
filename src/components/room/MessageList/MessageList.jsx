@@ -22,7 +22,10 @@ function MessageList({
           data={messages}
           initialTopMostItemIndex={messages.length - 1}
           followOutput="smooth"
-          alignToBottom={true}
+          atBottomThreshold={200}
+          components={{
+            Footer: () => <div style={{ height: '150px' }} />
+          }}
           itemContent={(index, message) => (
             <MessageItem
               key={message.id || index}

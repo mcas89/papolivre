@@ -4,11 +4,11 @@
 .room {
   display: flex;
   flex-direction: column;
-  /* Ocupa a viewport inteira respeitando safe-areas (notch/barra inferior) */
-  height: 100vh;           /* fallback */
-  height: 100dvh;          /* dynamic viewport height — melhor em mobile */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: #0f1117;
   overflow: hidden;
-  position: fixed;          /* Evita que bounce/scroll do browser quebre o layout */
-  inset: 0;
 }

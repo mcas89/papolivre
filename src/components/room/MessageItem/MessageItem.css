@@ -10,6 +10,7 @@
   margin-bottom: 12px;
   animation: messageFadeIn 0.3s ease forwards;
   max-width: 90%;
+  min-width: 0;
 }
 
 .message-wrapper.mine {
@@ -121,6 +122,7 @@
   line-height: 1.35;
   color: var(--text-primary);
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* ========================================================

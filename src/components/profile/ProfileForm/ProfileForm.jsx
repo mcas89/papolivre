@@ -15,7 +15,7 @@ function ProfileForm({ nickname, setNickname, city, setCity, onSave, saving = fa
             placeholder="Seu apelido..."
             value={nickname}
             maxLength={10}
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={(e) => setNickname(e.target.value.substring(0, 10))}
           />
         </div>
       </div>

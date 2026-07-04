@@ -365,7 +365,10 @@ function Login() {
                   type="text"
                   placeholder="Apelido no chat"
                   value={anonNickname}
-                  onChange={(e) => { setAnonNickname(e.target.value); setAnonOptionError(""); }}
+                  onChange={(e) => { 
+                    setAnonNickname(e.target.value.substring(0, 10)); 
+                    setAnonOptionError(""); 
+                  }}
                   maxLength={10}
                   required
                 />

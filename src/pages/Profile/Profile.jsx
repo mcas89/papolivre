@@ -221,8 +221,8 @@ function Profile() {
                   type="text"
                   placeholder="Seu apelido..."
                   value={nickname}
-                  maxLength={20}
-                  onChange={e => setNickname(e.target.value)}
+                  maxLength={10}
+                  onChange={e => setNickname(e.target.value.substring(0, 10))}
                 />
               </div>
             </div>

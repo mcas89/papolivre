@@ -228,7 +228,9 @@ function QuickRegister() {
               name="nickname"
               placeholder="Apelido (como aparecer no chat)"
               value={form.nickname}
-              onChange={handleChange}
+              onChange={(e) => handleChange({
+                target: { name: 'nickname', value: e.target.value.substring(0, 10) }
+              })}
               maxLength={10}
             />
           </div>

@@ -19,6 +19,7 @@
 
 .chat-input input {
   flex: 1;
+  min-width: 0; /* Permite que o input encolha abaixo do seu tamanho padrão */
   height: 44px;
   padding: 0 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);

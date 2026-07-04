@@ -220,7 +220,7 @@ function DiceBearPicker({ isPremium = false, initialAvatar, onSave, onClose }) {
 
         <div className="dicebear-preview-area">
           <div className="dicebear-preview-box">
-            <UserAvatar avatarData={previewData} size={140} />
+            <UserAvatar avatarData={previewData} size={160} />
           </div>
           
           {mode === 'preset' && (
@@ -248,7 +248,7 @@ function DiceBearPicker({ isPremium = false, initialAvatar, onSave, onClose }) {
         )}
 
         {mode === 'studio' && (
-          <div className="dicebear-studio-controls" style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '280px', overflowY: 'auto', paddingRight: '4px' }}>
+          <div className="dicebear-studio-controls" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div className="studio-select-group">
               <label>Cor da Pele</label>
               <select 

@@ -46,6 +46,31 @@ function MessageItem({
     );
   }
 
+  if (message.type === "presence") {
+    const isEnter = message.text.startsWith("→");
+    const isLeave = message.text.startsWith("←");
+    const arrowColor = isEnter ? "#10b981" : (isLeave ? "#ef4444" : "inherit");
+    
+    return (
+      <div className="message-presence">
+        <span className="message-presence-text">
+          <span style={{ color: arrowColor, fontWeight: "bold", marginRight: "4px" }}>
+            {message.text.charAt(0)}
+          </span>
+          {message.text.substring(1)}
+        </span>
+      </div>
+    );
+  }
+
+  if (message.type === "gift") {
+    return (
+      <div className="message-system gift-message">
+        <span className="message-system-text gift-text">{message.text}</span>
+      </div>
+    );
+  }
+
   return (
 
     <div className={`message-wrapper ${isMine ? "mine" : ""} ${isPrivate ? "private" : ""} ${isMyDirectMessage ? "active-conversation" : ""} ${isTargetingMe ? "directed-to-me" : ""}`}>

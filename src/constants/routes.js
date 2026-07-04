@@ -7,8 +7,10 @@ export const ROUTES = {
   ROOM: "/room",
 
   PROFILE: "/profile",
+  BENEFITS: "/store",
   PREMIUM: "/premium",
   NOTIFICATIONS: "/notifications",
   PRIVACY: "/privacidade",
   ABOUT: "/sobre",
+  SUPPORT: "/apoio",
 };

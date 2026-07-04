@@ -3,7 +3,11 @@ import "./UsersDrawer.css";
 import { X } from "lucide-react";
 import UserAvatar from "../../ui/UserAvatar/UserAvatar";
 
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../../constants/routes";
+
 const UsersDrawer = ({ onlineUsers, selectedUser, onSelectUser, onClose, blockedUsers = [], onToggleBlock, currentUserId }) => {
+  const navigate = useNavigate();
 
   // Oculta o próprio usuário da lista — não faz sentido selecionar a si mesmo
   const otherUsers = onlineUsers.filter(u => u.id !== currentUserId);
@@ -63,6 +67,20 @@ const UsersDrawer = ({ onlineUsers, selectedUser, onSelectUser, onClose, blocked
           {otherUsers.length === 0 && (
             <p className="users-empty">Nenhum outro usuário online no momento.</p>
           )}
+        </div>
+        
+        {/* Adicionado o botão para Benefícios */}
+        <div className="drawer-footer" style={{ padding: "16px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+          <button 
+            className="prof-btn-primary" 
+            style={{ width: "100%", padding: "12px", background: "linear-gradient(135deg, #8b5cf6, #6d28d9)", color: "white", borderRadius: "12px", border: "none", fontWeight: 600, display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", cursor: "pointer" }}
+            onClick={() => {
+              navigate(ROUTES.BENEFITS);
+              onClose();
+            }}
+          >
+            <span>✨ Benefícios</span>
+          </button>
         </div>
       </div>
     </>

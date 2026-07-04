@@ -7,6 +7,7 @@ import { useChat } from "../../context/ChatContext";
 import { useAuth } from "../../context/AuthContext";
 import useRoomSearch from "../../hooks/useRoomSearch";
 import chatService from "../../services/chatService";
+import { useToast } from "../../context/ToastContext";
 
 import { ROUTES } from "../../constants/routes";
 
@@ -23,6 +24,7 @@ function Home() {
 
   const { joinRoom, unreadRooms } = useChat();
   const { user, logout } = useAuth();
+  const { showToast } = useToast();
 
     // remove limite 5 salas no home
   const [showAllRooms, setShowAllRooms] = useState(false);
@@ -109,9 +111,9 @@ function Home() {
           // A localização foi atualizada no Firebase. O AuthContext vai receber 
           // a atualização em tempo real, mas para não obrigar o usuário a clicar 
           // de novo, tentamos fazer o join com uma gambiarra temporária ou avisamos:
-          alert("Localização obtida! Clique novamente para entrar na sala.");
+          showToast("Localização obtida! Clique novamente para entrar na sala.", "success");
         } catch (err) {
-          alert("Por favor, ative a permissão de geolocalização no navegador para usar a sala de Pessoas Próximas.");
+          showToast("Por favor, ative a permissão de geolocalização no navegador para usar a sala de Pessoas Próximas.", "error");
         }
       }
       return;
@@ -147,7 +149,8 @@ function Home() {
         onHome={() => navigate(ROUTES.HOME)}
         onSearch={handleDrawerSearch}
         onProfile={() => navigate(ROUTES.PROFILE)}
-        onPremium={() => navigate(ROUTES.PROFILE)}
+        onBenefits={() => navigate(ROUTES.BENEFITS)}
+        onPremium={() => navigate(ROUTES.PREMIUM)}
         onLogout={logout}
         onAbout={() => { setDrawerOpen(false); navigate(ROUTES.ABOUT); }}
         onPrivacy={() => { setDrawerOpen(false); navigate(ROUTES.PRIVACY); }}
@@ -193,7 +196,7 @@ function Home() {
       />
 
       <SupportCard
-        onClick={() => navigate(ROUTES.PREMIUM)}
+        onClick={() => navigate(ROUTES.SUPPORT)}
       />
 
     </main>

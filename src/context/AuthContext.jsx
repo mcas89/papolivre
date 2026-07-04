@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getDefaultAvatarData } from "../utils/avatarUtils";
+import { useToast } from "./ToastContext";
 
 import {
   onAuthStateChanged,
@@ -42,6 +43,7 @@ export function AuthProvider({ children }) {
 
   const [user,    setUser]    = useState(null);
   const [loading, setLoading] = useState(true);
+  const { showToast } = useToast();
 
   // ----------------------------------------------------------
   // Escuta mudanças de autenticação (Firebase cuida da sessão)
@@ -65,6 +67,17 @@ export function AuthProvider({ children }) {
         unsubFirestore = onSnapshot(userDocRef, (docSnap) => {
           if (docSnap.exists()) {
             const data = docSnap.data();
+            
+            // --- BLOQUEIO DE BANIMENTO (PAINEL ADMIN) ---
+            if (data.isBanned) {
+              showToast(`Sua conta foi banida da plataforma. Motivo: ${data.banReason || 'Violação dos Termos de Uso.'}`, "error");
+              signOut(auth);
+              setUser(null);
+              setLoading(false);
+              return;
+            }
+            // ---------------------------------------------
+
             const proUntilMillis = data.proUntil ? data.proUntil.toMillis() : 0;
             const isPremium = proUntilMillis > Date.now();
             setUser({ uid: firebaseUser.uid, ...data, isPremium });

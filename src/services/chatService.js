@@ -72,6 +72,10 @@ const chatService = {
           });
           resolve(msgs);
         },
+        (err) => {
+          console.warn("RTDB getMessages - Permissão Negada ou Erro:", err);
+          resolve([]);
+        },
         { onlyOnce: true }
       );
 
@@ -120,17 +124,17 @@ const chatService = {
 
   async sendMessage(roomId = "general", messageData) {
      const newMessage = {
-       roomId,
+       roomId: roomId || "general",
        timestamp: serverTimestamp(),
-       private: messageData.private || false,
+       private: Boolean(messageData.private),
        targetUser: messageData.targetUser || null,
        targetUserName: messageData.targetUserName || null,
-       userId: messageData.userId,
-       userName: messageData.userName,
+       userId: messageData.userId || "unknown",
+       userName: messageData.userName || "Usuário",
        userAvatar: messageData.userAvatar || null,
-       text: sanitizeMessage(messageData.text),
+       text: sanitizeMessage(messageData.text) || "",
        type: messageData.type || "text",
-       userPremium: messageData.userPremium || false,
+       userPremium: Boolean(messageData.userPremium),
      };
     console.log("=== BEFORE PUSH ===");
     console.log("ROOM ID:", roomId);
@@ -175,7 +179,9 @@ const chatService = {
       callback(msgs);
     };
 
-    const unsubscribe = onValue(q, handleSnapshot);
+    const unsubscribe = onValue(q, handleSnapshot, (err) => {
+      console.warn("RTDB Mensagens - Permissão Negada ou Erro:", err);
+    });
     return unsubscribe;
 
   },
@@ -236,7 +242,9 @@ const chatService = {
       }
     };
 
-    const unsubscribe = onValue(q, handleSnapshot);
+    const unsubscribe = onValue(q, handleSnapshot, (err) => {
+      console.warn("RTDB Mensagens Privadas - Permissão Negada ou Erro:", err);
+    });
     return unsubscribe;
   },
 
@@ -276,11 +284,16 @@ const chatService = {
 
   async getPresenceCount(roomId) {
     const pRef = ref(rtdb, `rooms/${roomId}/presence`);
-    const snapshot = await get(pRef);
-    if (!snapshot.exists()) {
+    try {
+      const snapshot = await get(pRef);
+      if (!snapshot.exists()) {
+        return 0;
+      }
+      return Object.keys(snapshot.val()).length;
+    } catch (err) {
+      console.warn(`RTDB getPresenceCount (${roomId}) - Permissão Negada ou Erro:`, err);
       return 0;
     }
-    return Object.keys(snapshot.val()).length;
   },
 
   // -------------------------
@@ -299,8 +312,10 @@ const chatService = {
       callback(users);
     };
 
-    const unsubscribe = onValue(pRef, handleSnapshot);
-    return unsubscribe;
+    const unsubscribe = onValue(pRef, handleSnapshot, (err) => {
+      console.warn("RTDB Presença - Permissão Negada ou Erro:", err);
+    });
+    return () => unsubscribe();
 
   },
 
@@ -351,7 +366,9 @@ const chatService = {
       callback({ blockedUsers, blockedBy });
     };
 
-    const unsubscribe = onValue(myBlocksRef, handleMyBlocks);
+    const unsubscribe = onValue(myBlocksRef, handleMyBlocks, (err) => {
+      console.warn("RTDB Blocks - Permissão Negada ou Erro:", err);
+    });
     return unsubscribe;
   }
 

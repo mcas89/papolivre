@@ -25,7 +25,7 @@ function About() {
         </div>
         <div>
           <h1>Sobre o PapoLivre</h1>
-          <span>Versão 1.0</span>
+          <span>Versão 2.0</span>
         </div>
       </header>
 
@@ -34,7 +34,7 @@ function About() {
         {/* Logo + nome */}
         <div className="about-hero">
           <img src={logo} alt="PapoLivre" className="about-logo" />
-          <div className="about-version-badge">v 1.0</div>
+          <div className="about-version-badge">v 2.0</div>
           <h2>PapoLivre</h2>
           <p className="about-tagline">Bate-papo livre, leve e sem julgamentos.</p>
         </div>
@@ -66,7 +66,7 @@ function About() {
         <div className="about-release">
           <div className="about-release-info">
             <span className="about-release-label">Versão atual</span>
-            <span className="about-release-version">1.0.0</span>
+            <span className="about-release-version">2.0.0</span>
           </div>
           <div className="about-release-info">
             <span className="about-release-label">Lançamento</span>

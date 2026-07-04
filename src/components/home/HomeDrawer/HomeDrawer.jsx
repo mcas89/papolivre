@@ -9,6 +9,7 @@ import {
   LogOut,
   Info,
   ShieldCheck,
+  PackageOpen
 } from "lucide-react";
 
 import logo from "../../../assets/logo/logo01.png";
@@ -20,6 +21,7 @@ function HomeDrawer({
   onHome,
   onSearch,
   onProfile,
+  onBenefits,
   onPremium,
   onLogout,
   onAbout,
@@ -96,6 +98,13 @@ function HomeDrawer({
             Meu Perfil
           </button>
 
+          <button onClick={onBenefits}>
+            <span className="drawer-menu-icon" style={{ color: "#a78bfa" }}>
+              <PackageOpen size={18} />
+            </span>
+            ✨ Benefícios
+          </button>
+
           <button onClick={onPremium} className="drawer-menu-premium">
             <span className="drawer-menu-icon drawer-menu-icon--premium">
               <Crown size={18} />
@@ -119,7 +128,7 @@ function HomeDrawer({
           <div className="drawer-legal-links">
             <button onClick={onAbout}>
               <Info size={13} />
-              Sobre v1.0
+              Sobre v2.0
             </button>
             <span>·</span>
             <button onClick={onPrivacy}>

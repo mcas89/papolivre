@@ -12,13 +12,17 @@ import PrivateReplyBar from "../../components/room/PrivateReplyBar/PrivateReplyB
 import ChatInput from "../../components/room/ChatInput/ChatInput";
 import UsersDrawer from "../../components/room/UsersDrawer/UsersDrawer";
 import MyRoomsPopup from "../../components/home/MyRoomsPopup/MyRoomsPopup";
+import EffectsLayer from "../../components/room/EffectsLayer/EffectsLayer";
+import PublicGiftsLayer from "../../components/room/PublicGiftsLayer/PublicGiftsLayer";
 import Button from "../../components/ui/Button/Button";
 import reportService from "../../services/reportService";
+import { useToast } from "../../context/ToastContext";
 
 function Room() {
 
   const navigate = useNavigate();
-  const { messages, currentUser, onlineUsers, sendMessage, roomName, leaveRoom, blockedUsers, toggleBlockUser, unreadRooms } = useChat();
+  const { messages, currentUser, onlineUsers, sendMessage, roomName, leaveRoom, blockedUsers, toggleBlockUser, unreadRooms, currentRoom } = useChat();
+  const { showToast } = useToast();
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [isPrivateReply, setIsPrivateReply] = useState(false);
@@ -63,9 +67,9 @@ function Room() {
         roomId: currentRoom || "unknown",
         reason
       });
-      alert("Denúncia enviada com sucesso. Obrigado por ajudar a manter a comunidade segura.");
+      showToast("Denúncia enviada com sucesso. Obrigado por ajudar a manter a comunidade segura.", "success");
     } catch (err) {
-      alert("Erro ao enviar denúncia. Tente novamente.");
+      showToast("Erro ao enviar denúncia. Tente novamente.", "error");
     } finally {
       setIsReporting(false);
       setMessageToReport(null);
@@ -75,8 +79,11 @@ function Room() {
   return (
 
     <main className="room">
+      <EffectsLayer roomId={currentRoom} />
+      <PublicGiftsLayer roomId={currentRoom} />
 
       <RoomHeader
+        roomId={currentRoom}
         roomName={roomName}
         onlineCount={onlineUsers.length}
         unreadCount={Object.values(unreadRooms).reduce((sum, cnt) => sum + cnt, 0)}
@@ -111,7 +118,7 @@ function Room() {
         onSelectUser={(user) => {
           const isOnline = onlineUsers.some(u => u.id === user.userId);
           if (!isOnline) {
-            alert("Este usuário não está mais na sala.");
+            showToast("Este usuário não está mais na sala.", "error");
             return;
           }
           setSelectedUser(user);
@@ -132,6 +139,7 @@ function Room() {
 
         <ChatInput
           selectedUser={selectedUser}
+          isPrivateReply={isPrivateReply}
           onSendMessage={handleSendMessage}
         />
       </div>

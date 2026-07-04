@@ -5,9 +5,11 @@ import { ROUTES } from "../../../constants/routes";
 
 import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../../firebase/config";
+import { useToast } from "../../../context/ToastContext";
 
 function CreditsCard({ user }) {
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleActivatePro = async () => {
     if (!user?.uid || (user.credits || 0) <= 0) return;
@@ -20,10 +22,10 @@ function CreditsCard({ user }) {
         credits: user.credits - 1,
         proUntil: Timestamp.fromMillis(newProUntilMillis)
       });
-      alert("Premium PRO ativado por 7 dias! 🎉");
+      showToast("Premium PRO ativado por 7 dias! 🎉", "success");
     } catch (err) {
       console.error("Erro ao ativar premium:", err);
-      alert("Erro ao ativar. Tente novamente.");
+      showToast("Erro ao ativar. Tente novamente.", "error");
     }
   };
 

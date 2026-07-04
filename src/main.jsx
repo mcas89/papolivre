@@ -15,15 +15,24 @@ import "./styles/dark.css";
 
 import { ChatProvider } from "./context/ChatContext";
 import { AuthProvider } from "./context/AuthContext";
+import { SystemProvider } from "./context/SystemContext";
+import { ToastProvider } from "./context/ToastContext";
+import { ConfirmProvider } from "./context/ConfirmContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
 
-    <AuthProvider>
-      <ChatProvider>
-        <App />
-      </ChatProvider>
-    </AuthProvider>
+    <SystemProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <ConfirmProvider>
+            <ChatProvider>
+              <App />
+            </ChatProvider>
+          </ConfirmProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </SystemProvider>
 
   </React.StrictMode>
 );

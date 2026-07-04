@@ -142,6 +142,36 @@
   text-align: center;
 }
 
+.message-presence {
+  display: flex;
+  justify-content: flex-start;
+  margin: 4px 0 12px 0;
+  width: 100%;
+}
+
+.message-presence-text {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.gift-message {
+  margin: 8px 0;
+}
+
+.gift-text {
+  font-style: normal;
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+}
+
 .message-time {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.4);

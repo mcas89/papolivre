@@ -6,7 +6,16 @@
         ".write": "auth != null",
         "messages": {
           ".indexOn": ["timestamp", "targetUser"]
+        },
+        "effects": {
+          ".indexOn": ["timestamp"]
         }
+      }
+    },
+    "effect_cooldowns": {
+      "$userId": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid == $userId"
       }
     },
     "blocks": {

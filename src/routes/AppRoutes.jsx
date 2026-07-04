@@ -10,7 +10,9 @@ import Home from "../pages/Home/Home";
 import Room from "../pages/Room/Room";
 import Notifications from "../pages/Notifications/Notifications";
 import Profile from "../pages/Profile/Profile";
+import Benefits from "../pages/Benefits/Benefits";
 import Premium from "../pages/Premium/Premium";
+import Support from "../pages/Support/Support";
 
 import NotFound from "../pages/NotFound/NotFound";
 import Privacy from "../pages/Privacy/Privacy";
@@ -40,7 +42,9 @@ function AppRoutes() {
           <Route path={ROUTES.ROOM} element={<Room />} />
           <Route path={ROUTES.NOTIFICATIONS} element={<Notifications />} />
           <Route path={ROUTES.PROFILE} element={<Profile />} />
+          <Route path={ROUTES.BENEFITS} element={<Benefits />} />
           <Route path={ROUTES.PREMIUM} element={<Premium />} />
+          <Route path={ROUTES.SUPPORT} element={<Support />} />
 
         </Route>
 

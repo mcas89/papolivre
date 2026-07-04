@@ -10,6 +10,7 @@ import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "../firebase/config";
 import chatService    from "../services/chatService";
 import { useAuth }   from "./AuthContext";
+import { useToast } from "./ToastContext";
 import { ROUTES }    from "../constants/routes";
 
 const ChatContext = createContext();
@@ -17,6 +18,7 @@ const ChatContext = createContext();
 export function ChatProvider({ children }) {
 
   const { user } = useAuth();
+  const { showToast } = useToast();
 
   // ======================
   // ESTADOS DO CHAT
@@ -212,15 +214,27 @@ export function ChatProvider({ children }) {
       }
     }
 
-    // 3. Se já estamos NESSA sala exata, limpa unread e retorna
+    // 3. Se já estamos NESSA sala exata, limpa unread e verifica se a presença está ativa
     if (targetRoomId === currentRoom) {
       setUnreadRooms(prev => { const { [targetRoomId]: _, ...rest } = prev; return rest; });
+      
+      // Garante que a presença existe. Se caiu por idle ou algum outro cleanup, restaura!
+      if (!presenceCleanups.current[targetRoomId] && user?.uid) {
+        const userData = { uid: user.uid, name: user.nickname || user.name, nickname: user.nickname, avatar: user.avatar };
+        try {
+          const cleanup = await chatService.setPresence(targetRoomId, userData);
+          presenceCleanups.current[targetRoomId] = cleanup;
+        } catch (err) {
+          console.error("Erro ao restaurar presença:", err);
+        }
+      }
+
       return { success: true, targetRoomId };
     }
 
-    // 4. Limite de pessoas na sala (100 para grátis, 130 para premium)
+    // 4. Limite de pessoas na sala (50 para grátis, 80 para premium)
     const count = await chatService.getPresenceCount(targetRoomId);
-    const maxLimit = user?.isPremium ? 130 : 100;
+    const maxLimit = user?.isPremium ? 80 : 50;
     if (count >= maxLimit) {
       return { success: false, error: "SALA_CHEIA", limit: maxLimit };
     }
@@ -254,9 +268,9 @@ export function ChatProvider({ children }) {
           chatService.sendMessage(targetRoomId, {
             userId: "system",
             userName: "Sistema",
-            userAvatar: "👋",
-            text: `📥 ${user.nickname || user.name || "Alguém"} chegou na sala!`,
-            type: "system"
+            userAvatar: "",
+            text: `→ ${user.nickname || user.name || "Alguém"} entrou na sala.`,
+            type: "presence"
           }).catch(() => {});
         }
       } catch (err) {
@@ -305,9 +319,9 @@ export function ChatProvider({ children }) {
       chatService.sendMessage(actualRoomId, {
         userId: "system",
         userName: "Sistema",
-        userAvatar: "🚪",
-        text: `🚪 ${user.nickname || user.name || "Alguém"} saiu da sala.`,
-        type: "system"
+        userAvatar: "",
+        text: `← ${user.nickname || user.name || "Alguém"} saiu da sala.`,
+        type: "presence"
       }).catch(() => {});
     }
 
@@ -362,7 +376,7 @@ export function ChatProvider({ children }) {
         // Limpar TODAS as presenças de todas as salas
         Object.values(presenceCleanups.current).forEach(fn => { try { fn(); } catch(e) { /* best effort */ } });
         presenceCleanups.current = {};
-        alert("Você saiu da sala por inatividade.");
+        showToast("Você saiu da sala por inatividade.", "info");
         window.location.href = "/";
       }, INACTIVITY_MS);
     };

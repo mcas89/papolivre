@@ -1,6 +1,6 @@
 import "./MessageList.css";
 
-import { useEffect, useRef } from "react";
+import { Virtuoso } from "react-virtuoso";
 import MessageItem from "../MessageItem/MessageItem";
 import EmptyState from "../EmptyState/EmptyState";
 
@@ -9,29 +9,32 @@ function MessageList({
   currentUserId,
   onSelectUser,
   selectedUserId,
+  onReportMessage,
 }) {
-  const bottomRef = useRef(null);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
   return (
     <div className="message-list">
       {(!messages || messages.length === 0) ? (
         <EmptyState />
       ) : (
-        messages.map((message) => (
-          <MessageItem
-            key={message.id}
-            message={message}
-            currentUserId={currentUserId}
-            onSelectUser={onSelectUser}
-            selectedUserId={selectedUserId}
-          />
-        ))
+        <Virtuoso
+          className="virtuoso-message-list"
+          style={{ height: '100%' }}
+          data={messages}
+          initialTopMostItemIndex={messages.length - 1}
+          followOutput="smooth"
+          alignToBottom={true}
+          itemContent={(index, message) => (
+            <MessageItem
+              key={message.id || index}
+              message={message}
+              currentUserId={currentUserId}
+              onSelectUser={onSelectUser}
+              selectedUserId={selectedUserId}
+              onReportMessage={onReportMessage}
+            />
+          )}
+        />
       )}
-      <div ref={bottomRef} />
     </div>
   );
 }

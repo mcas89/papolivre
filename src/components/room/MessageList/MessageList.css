@@ -7,7 +7,15 @@
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  overflow-y: auto;
   width: 100%;
+}
+
+.messages-container {
+  padding: 12px 10px 24px 10px;
+  display: flex;
+  flex-direction: column;
+  min-height: min-content;
 }
 
 .virtuoso-message-list {

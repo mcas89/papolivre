@@ -15,6 +15,7 @@ import HomeDrawer from "../../components/home/HomeDrawer/HomeDrawer";
 import HomeHeader from "../../components/home/HomeHeader/HomeHeader";
 import MyRoomsPopup from "../../components/home/MyRoomsPopup/MyRoomsPopup";
 import FeaturedCard from "../../components/home/FeaturedCard/FeaturedCard";
+import CustomRoomsCarousel from "../../components/home/CustomRoomsCarousel/CustomRoomsCarousel";
 import RoomsSection from "../../components/home/RoomsSection/RoomsSection";
 import SupportCard from "../../components/ui/SupportCard/SupportCard";
 import PremiumLimitModal from "../../components/ui/PremiumLimitModal/PremiumLimitModal";
@@ -136,8 +137,12 @@ function Home() {
     navigate(ROUTES.ROOM);
   }
 
-  // Exibe apenas as primeiras 5 salas se não for busca ativa
+  // Exibe apenas as primeiras 5 salas se não for busca ativa (a lógica de limitar já está no RoomsSection ou no hook)
   const topRooms = results;
+  
+  // Separar as salas para os dois componentes
+  const customRooms = topRooms.filter(r => r.isCustom);
+  const officialRooms = topRooms.filter(r => !r.isCustom);
 
   const quickFilters = ["🔥 Em Alta", "📍 Perto de mim", "🎵 Música", "💬 Bate-papo", "🎮 Jogos"];
 
@@ -204,8 +209,13 @@ function Home() {
         onClick={handleFeaturedClick}
       />
 
+      <CustomRoomsCarousel 
+        rooms={customRooms} 
+        onRoomClick={handleRoomClick} 
+      />
+
       <RoomsSection
-        rooms={topRooms}
+        rooms={officialRooms}
         loading={loading}
         hasQuery={hasQuery}
         showAll={showAllRooms}

@@ -17,7 +17,7 @@ function FeaturedCard({
       {/* Background Image of a glowing night city map or neon */}
       <div 
         className="featured-hero-bg" 
-        style={{ backgroundImage: `url('https://loremflickr.com/800/400/city,night/all')` }}
+        style={{ backgroundImage: `url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800&auto=format&fit=crop')` }}
       ></div>
       <div className="featured-hero-overlay"></div>
 

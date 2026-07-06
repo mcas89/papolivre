@@ -79,6 +79,22 @@ function CreateRoomModal({ isOpen, onClose, onSuccess }) {
           Sua sala ficará disponível para todos por 7 dias. Você será o dono dela!
         </p>
 
+        {/* Live Preview */}
+        <div className="create-room-preview">
+          <label>Como sua sala vai aparecer:</label>
+          <div className="preview-square-container">
+            <div className="custom-room-square" style={{ pointerEvents: "none", margin: "0 auto" }}>
+              <div className="custom-room-icon-wrapper">
+                <span className="custom-room-emoji">{icon || "✨"}</span>
+              </div>
+              <h3 className="custom-room-name">{name || "Nome da Sala"}</h3>
+              <div className="custom-room-online">
+                <span style={{ fontSize: "10px" }}>0 online</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <form onSubmit={handleSubmit} className="create-room-form">
           <div className="form-group">
             <label>Ícone (Emoji)</label>

@@ -1,0 +1,131 @@
+/* =============================
+   CustomRoomsCarousel
+   ============================= */
+
+.custom-rooms-section {
+  margin: 16px 0 8px;
+  padding-bottom: 8px;
+}
+
+.custom-rooms-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 16px 12px;
+  letter-spacing: -0.01em;
+}
+
+/* Scroll Container */
+.custom-rooms-scroll-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0 16px 12px; /* Bottom padding for scrollbar / shadow space */
+  
+  /* Esconder scrollbar mantendo funcionalidade */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.custom-rooms-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Square Card */
+.custom-room-square {
+  /* Aproximadamente 3 itens por tela, considerando o gap de 12px e padding lateral */
+  flex: 0 0 calc(33.33vw - 20px);
+  max-width: 120px;
+  aspect-ratio: 1 / 1;
+  scroll-snap-align: start;
+  
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 12px 8px;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.custom-room-square:hover, .custom-room-square:active {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Ícone */
+.custom-room-icon-wrapper {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.custom-room-emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Nome */
+.custom-room-name {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+  width: 100%;
+  
+  /* Truncate to 1 line */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Online Counter */
+.custom-room-online {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #10b981;
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.15);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+/* Highlighted Style */
+.highlighted-square {
+  border-color: #f59e0b;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+  background: linear-gradient(to bottom, rgba(245, 158, 11, 0.1), rgba(255, 255, 255, 0.05));
+}
+
+.highlight-star {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 12px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  animation: pulseStar 2s infinite ease-in-out;
+}
+
+@keyframes pulseStar {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}

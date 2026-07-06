@@ -1,102 +1,43 @@
 import { useState, useEffect } from "react";
 import "./RoomCard.css";
 
-import { Flame, Users, Clock, AlertTriangle } from "lucide-react";
+import { 
+  Flame, Users, Clock, AlertTriangle, 
+  Cpu, Heart, Dumbbell, MapPin, 
+  PartyPopper, Music, Gamepad2, Film, 
+  Trophy, MessageCircle 
+} from "lucide-react";
 
 // ==========================================
-// CONFIGURAÇÃO DE IMAGENS POR TEMA
+// ESTILOS POR TEMA (Spotify / Apple Music style)
 // ==========================================
-// Você pode alterar estas URLs para as imagens que você mesmo escolher.
-// Sites recomendados para pegar fotos bonitas: Unsplash.com, Pexels.com, Pixabay.com
-// Basta copiar o "Endereço da Imagem" e colar dentro das aspas abaixo!
-const THEME_IMAGES = {
-  tecnologia: [
-    "https://loremflickr.com/400/200/technology,coding/all?lock=1",
-    "https://loremflickr.com/400/200/technology,coding/all?lock=2",
-    "https://loremflickr.com/400/200/technology,coding/all?lock=3",
-    "https://loremflickr.com/400/200/technology,coding/all?lock=4",
-    "https://loremflickr.com/400/200/technology,coding/all?lock=5",
-  ],
-  amor: [
-    "https://loremflickr.com/400/200/heart,love/all?lock=1",
-    "https://loremflickr.com/400/200/couple,romantic/all?lock=2",
-    "https://loremflickr.com/400/200/hearts,red/all?lock=3",
-    "https://loremflickr.com/400/200/couple,kiss/all?lock=4",
-    "https://loremflickr.com/400/200/couple,hug/all?lock=5",
-  ],
-  saude: [
-    "https://loremflickr.com/400/200/fitness,health/all?lock=1",
-    "https://loremflickr.com/400/200/fitness,health/all?lock=2",
-    "https://loremflickr.com/400/200/fitness,health/all?lock=3",
-    "https://loremflickr.com/400/200/fitness,health/all?lock=4",
-    "https://loremflickr.com/400/200/fitness,health/all?lock=5",
-  ],
-  sao_paulo: [
-    "https://loremflickr.com/400/200/saopaulo,city/all?lock=1",
-    "https://loremflickr.com/400/200/saopaulo,city/all?lock=2",
-    "https://loremflickr.com/400/200/saopaulo,city/all?lock=3",
-    "https://loremflickr.com/400/200/saopaulo,city/all?lock=4",
-    "https://loremflickr.com/400/200/saopaulo,city/all?lock=5",
-  ],
-  festa: [
-    "https://loremflickr.com/400/200/party,club/all?lock=1",
-    "https://loremflickr.com/400/200/party,club/all?lock=2",
-    "https://loremflickr.com/400/200/party,club/all?lock=3",
-    "https://loremflickr.com/400/200/party,club/all?lock=4",
-    "https://loremflickr.com/400/200/party,club/all?lock=5",
-  ],
-  musica: [
-    "https://loremflickr.com/400/200/music,concert/all?lock=1",
-    "https://loremflickr.com/400/200/music,concert/all?lock=2",
-    "https://loremflickr.com/400/200/music,concert/all?lock=3",
-    "https://loremflickr.com/400/200/music,concert/all?lock=4",
-    "https://loremflickr.com/400/200/music,concert/all?lock=5",
-  ],
-  jogos: [
-    "https://loremflickr.com/400/200/gaming,esports/all?lock=1",
-    "https://loremflickr.com/400/200/gaming,esports/all?lock=2",
-    "https://loremflickr.com/400/200/gaming,esports/all?lock=3",
-    "https://loremflickr.com/400/200/gaming,esports/all?lock=4",
-    "https://loremflickr.com/400/200/gaming,esports/all?lock=5",
-  ],
-  filme: [
-    "https://loremflickr.com/400/200/cinema,movie/all?lock=1",
-    "https://loremflickr.com/400/200/cinema,movie/all?lock=2",
-    "https://loremflickr.com/400/200/cinema,movie/all?lock=3",
-    "https://loremflickr.com/400/200/cinema,movie/all?lock=4",
-    "https://loremflickr.com/400/200/cinema,movie/all?lock=5",
-  ],
-  futebol: [
-    "https://loremflickr.com/400/200/sports,football/all?lock=1",
-    "https://loremflickr.com/400/200/sports,football/all?lock=2",
-    "https://loremflickr.com/400/200/sports,football/all?lock=3",
-    "https://loremflickr.com/400/200/sports,football/all?lock=4",
-    "https://loremflickr.com/400/200/sports,football/all?lock=5",
-  ],
-  // Fallbacks genéricos (se a sala não tiver nenhum dos temas acima)
-  geral: [
-    "https://loremflickr.com/400/200/friends,group/all?lock=1",
-    "https://loremflickr.com/400/200/abstract,neon/all?lock=1",
-    "https://loremflickr.com/400/200/event,party/all?lock=1",
-    "https://loremflickr.com/400/200/cyberpunk,city/all?lock=1",
-    "https://loremflickr.com/400/200/people,laughing/all?lock=1"
-  ]
+const THEME_STYLES = {
+  tecnologia: { gradient: "linear-gradient(135deg, #0f172a 0%, #3b82f6 100%)", Icon: Cpu },
+  amor: { gradient: "linear-gradient(135deg, #be123c 0%, #f43f5e 100%)", Icon: Heart },
+  saude: { gradient: "linear-gradient(135deg, #064e3b 0%, #10b981 100%)", Icon: Dumbbell },
+  sao_paulo: { gradient: "linear-gradient(135deg, #1e3a8a 0%, #4f46e5 100%)", Icon: MapPin },
+  festa: { gradient: "linear-gradient(135deg, #4c1d95 0%, #a855f7 100%)", Icon: PartyPopper },
+  musica: { gradient: "linear-gradient(135deg, #831843 0%, #ec4899 100%)", Icon: Music },
+  jogos: { gradient: "linear-gradient(135deg, #14532d 0%, #22c55e 100%)", Icon: Gamepad2 },
+  filme: { gradient: "linear-gradient(135deg, #7f1d1d 0%, #ef4444 100%)", Icon: Film },
+  futebol: { gradient: "linear-gradient(135deg, #3f6212 0%, #84cc16 100%)", Icon: Trophy },
+  geral: { gradient: "linear-gradient(135deg, #312e81 0%, #6366f1 100%)", Icon: MessageCircle }
 };
 
-function getRoomImagesArray(roomName, roomDesc) {
+function getRoomTheme(roomName, roomDesc) {
   const text = `${roomName} ${roomDesc}`.toLowerCase();
   
-  if (text.includes("tecnologia") || text.includes("dev") || text.includes("program")) return THEME_IMAGES.tecnologia;
-  if (text.includes("amor") || text.includes("namoro") || text.includes("casal") || text.includes("crush") || text.includes("relacionamento")) return THEME_IMAGES.amor;
-  if (text.includes("saude") || text.includes("saúde") || text.includes("bem estar") || text.includes("bem-estar") || text.includes("fitness")) return THEME_IMAGES.saude;
-  if (text.includes("são paulo") || text.includes("sao paulo") || text.includes(" sp")) return THEME_IMAGES.sao_paulo;
-  if (text.includes("festa") || text.includes("balada") || text.includes("role")) return THEME_IMAGES.festa;
-  if (text.includes("música") || text.includes("rock") || text.includes("pop")) return THEME_IMAGES.musica;
-  if (text.includes("jogo") || text.includes("game") || text.includes("rpg")) return THEME_IMAGES.jogos;
-  if (text.includes("filme") || text.includes("cinema") || text.includes("série")) return THEME_IMAGES.filme;
-  if (text.includes("futebol") || text.includes("esporte")) return THEME_IMAGES.futebol;
+  if (text.includes("tecnologia") || text.includes("dev") || text.includes("program")) return THEME_STYLES.tecnologia;
+  if (text.includes("amor") || text.includes("namoro") || text.includes("casal") || text.includes("crush") || text.includes("relacionamento")) return THEME_STYLES.amor;
+  if (text.includes("saude") || text.includes("saúde") || text.includes("bem estar") || text.includes("bem-estar") || text.includes("fitness")) return THEME_STYLES.saude;
+  if (text.includes("são paulo") || text.includes("sao paulo") || text.includes(" sp")) return THEME_STYLES.sao_paulo;
+  if (text.includes("festa") || text.includes("balada") || text.includes("role")) return THEME_STYLES.festa;
+  if (text.includes("música") || text.includes("rock") || text.includes("pop")) return THEME_STYLES.musica;
+  if (text.includes("jogo") || text.includes("game") || text.includes("rpg")) return THEME_STYLES.jogos;
+  if (text.includes("filme") || text.includes("cinema") || text.includes("série")) return THEME_STYLES.filme;
+  if (text.includes("futebol") || text.includes("esporte")) return THEME_STYLES.futebol;
 
-  return THEME_IMAGES.geral;
+  return THEME_STYLES.geral;
 }
 
 function RoomCard({ room, onClick }) {
@@ -112,39 +53,19 @@ function RoomCard({ room, onClick }) {
     if (highTime > Date.now()) isHighlighted = true;
   }
 
-  // Obter array de imagens baseada no tema da sala
-  const imageArray = getRoomImagesArray(room.name, room.description || "");
-  
-  // Estado para controlar a imagem atual
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  // Efeito para trocar a imagem a cada minuto (60000 ms)
-  useEffect(() => {
-    // Definimos uma imagem aleatória inicial baseada no tempo atual para que as salas não girem todas de uma vez, 
-    // ou usamos um índice inicial baseado no ID da sala para variedade imediata
-    let hash = 0;
-    const name = room.name || "";
-    for (let i = 0; i < name.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    setCurrentImageIndex(Math.abs(hash) % imageArray.length);
-
-    const intervalId = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageArray.length);
-    }, 60000); // Muda a cada 1 minuto
-
-    return () => clearInterval(intervalId); // Limpa o intervalo ao desmontar
-  }, [imageArray.length, room.name]);
-
-  const coverUrl = imageArray[currentImageIndex];
+  // Obter estilo baseada no tema da sala
+  const theme = getRoomTheme(room.name, room.description || "");
+  const ThemeIcon = theme.Icon;
 
   return (
     <article
       className={`room-gallery-card ${isHighlighted ? 'highlighted-room' : ''}`}
       onClick={() => onClick(room)}
     >
-      <div className="room-cover-wrapper">
-        <img src={coverUrl} alt="Capa da sala" className="room-cover-image" loading="lazy" />
+      <div className="room-cover-wrapper" style={{ background: theme.gradient }}>
+        <div className="room-cover-icon-bg">
+          <ThemeIcon size={42} strokeWidth={1.5} color="rgba(255, 255, 255, 0.4)" />
+        </div>
         <div className="room-cover-overlay"></div>
         
         {/* Badges Flutuantes sobre a Imagem */}

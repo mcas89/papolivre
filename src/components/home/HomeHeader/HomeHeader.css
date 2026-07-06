@@ -44,6 +44,13 @@
   border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
+.header-logo-icon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .header-user-text {
   display: flex;
   flex-direction: column;

@@ -102,7 +102,7 @@ function HomeDrawer({
             <span className="drawer-menu-icon" style={{ color: "#a78bfa" }}>
               <PackageOpen size={18} />
             </span>
-            ✨ Benefícios
+            Benefícios
           </button>
 
           <button onClick={onPremium} className="drawer-menu-premium">

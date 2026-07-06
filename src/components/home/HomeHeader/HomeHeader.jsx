@@ -33,9 +33,7 @@ function HomeHeader({
           {userPhoto ? (
             <img src={userPhoto} alt="Perfil" className="header-avatar" />
           ) : (
-            <div className="header-avatar-fallback">
-              <User size={22} color="#fff" />
-            </div>
+            <img src={logo} alt="PapoLivre" className="header-logo-icon" />
           )}
           <div className="header-user-text">
             <span className="header-greeting">Olá,</span>

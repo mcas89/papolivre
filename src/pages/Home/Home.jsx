@@ -15,6 +15,7 @@ import HomeDrawer from "../../components/home/HomeDrawer/HomeDrawer";
 import HomeHeader from "../../components/home/HomeHeader/HomeHeader";
 import MyRoomsPopup from "../../components/home/MyRoomsPopup/MyRoomsPopup";
 import FeaturedCard from "../../components/home/FeaturedCard/FeaturedCard";
+import FeaturedMapCard from "../../components/home/FeaturedMapCard/FeaturedMapCard";
 import CustomRoomsCarousel from "../../components/home/CustomRoomsCarousel/CustomRoomsCarousel";
 import RoomsSection from "../../components/home/RoomsSection/RoomsSection";
 import SupportCard from "../../components/ui/SupportCard/SupportCard";
@@ -204,10 +205,17 @@ function Home() {
         </div>
       )}
 
-      <FeaturedCard
+      <FeaturedMapCard
         onlineUsers={geoOnlineCount}
         onClick={handleFeaturedClick}
       />
+
+      {/* 
+        <FeaturedCard
+          onlineUsers={geoOnlineCount}
+          onClick={handleFeaturedClick}
+        />
+      */}
 
       <CustomRoomsCarousel 
         rooms={customRooms} 

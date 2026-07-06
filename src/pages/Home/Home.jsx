@@ -139,8 +139,15 @@ function Home() {
   // Exibe apenas as primeiras 5 salas se não for busca ativa
   const topRooms = results;
 
+  const quickFilters = ["🔥 Em Alta", "📍 Perto de mim", "🎵 Música", "💬 Bate-papo", "🎮 Jogos"];
+
   return (
     <main className="home">
+      
+      {/* Imagem de Fundo Dinâmica do Topo (Hero Background) */}
+      <div className="home-hero-bg">
+        <div className="home-hero-overlay"></div>
+      </div>
 
       <HomeDrawer
         open={drawerOpen}
@@ -180,6 +187,17 @@ function Home() {
         searchQuery={query}
         onSearchChange={setQuery}
       />
+
+      {/* Chips de Navegação Horizontal */}
+      {!hasQuery && (
+        <div className="home-quick-filters">
+          {quickFilters.map((filter, index) => (
+            <button key={index} className={`filter-chip ${index === 0 ? "filter-chip--active" : ""}`}>
+              {filter}
+            </button>
+          ))}
+        </div>
+      )}
 
       <FeaturedCard
         onlineUsers={geoOnlineCount}

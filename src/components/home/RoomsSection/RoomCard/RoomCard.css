@@ -1,130 +1,152 @@
-.room-card {
+.room-gallery-card {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  padding: 16px;
-  border-radius: 18px;
-  cursor: pointer;
-  
-  /* Glassmorphism base */
+  flex-direction: column;
+  border-radius: 20px;
   background: rgba(25, 20, 35, 0.6);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
 }
 
-/* Subtle glow effect behind the border on hover */
-.room-card::before {
-  content: "";
+.room-gallery-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Image Cover Section */
+.room-cover-wrapper {
+  position: relative;
+  width: 100%;
+  height: 70px; /* Bem mais baixo para ficar fino */
+  overflow: hidden;
+}
+
+.room-cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.room-gallery-card:hover .room-cover-image {
+  transform: scale(1.1);
+}
+
+.room-cover-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: 20px;
-  padding: 2px; /* thickness of the glowing border */
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(255, 255, 255, 0));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  background: linear-gradient(to top, rgba(25, 20, 35, 1) 0%, rgba(25, 20, 35, 0.2) 60%, rgba(25, 20, 35, 0) 100%);
 }
 
-.room-card:hover {
-  transform: translateY(-4px);
-  background: rgba(30, 25, 45, 0.8);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), 0 0 20px rgba(139, 92, 246, 0.15);
-  border-color: transparent; /* hide standard border to show glowing pseudo border */
-}
-
-.room-card:hover::before {
-  opacity: 1;
-}
-
-.room-left {
+.card-badges-top-right {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   display: flex;
-  gap: 14px;
-  align-items: center;
-  z-index: 1;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  z-index: 2;
 }
 
-.room-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+.badge-featured {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.8);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+  animation: flameFlicker 2s infinite alternate;
 }
 
-.room-card:hover .room-icon {
-  transform: scale(1.1) rotate(-5deg);
-  background: rgba(139, 92, 246, 0.15);
-  border-color: rgba(139, 92, 246, 0.3);
+.badge-highlight {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
 }
 
-.room-info {
+.badge-expiry {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+}
+
+/* Info Section (Below the image) */
+.card-info-section {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  padding: 10px 12px 14px;
+  z-index: 2;
+  position: relative;
 }
 
-.room-title {
+.card-text-content {
   display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 8px;
 }
 
-.room-title h3 {
+.card-title {
   color: #fff;
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
+  font-size: 16px; 
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.room-info p {
+.card-description {
   color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
-  transition: color 0.2s;
+  font-size: 12px; 
+  line-height: 1.3;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.room-card:hover .room-info p {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.featured {
-  color: #f59e0b;
-  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));
-  animation: flameFlicker 2s infinite alternate;
-}
-
-.room-right {
+.card-online-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: #10b981;
-  font-weight: 700;
-  font-size: 14px;
-  background: rgba(16, 185, 129, 0.1);
-  padding: 6px 12px;
-  border-radius: 12px;
-  z-index: 1;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  transition: 0.3s ease;
-}
-
-.room-card:hover .room-right {
+  gap: 4px;
   background: rgba(16, 185, 129, 0.15);
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  flex-shrink: 0;
 }
 
 @keyframes flameFlicker {

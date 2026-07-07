@@ -62,6 +62,37 @@ function About() {
           </ul>
         </div>
 
+        {/* Equipe / Agradecimentos */}
+        <div className="about-team-card">
+          <div className="team-card-header">
+            <Heart size={20} className="team-heart-icon" />
+            <h3>Agradecimentos Especiais</h3>
+          </div>
+          
+          <div className="about-team-members">
+            <div className="team-member developer">
+              <div className="team-member-info">
+                <span className="team-role">Desenvolvedor e Criador</span>
+                <span className="team-name">Marcos C. A Silva</span>
+              </div>
+            </div>
+            
+            <div className="team-member ideas">
+              <div className="team-member-info">
+                <span className="team-role">Ideias e Conceitos</span>
+                <span className="team-name">Eric Rafael S. Silva</span>
+              </div>
+            </div>
+            
+            <div className="team-member ideas">
+              <div className="team-member-info">
+                <span className="team-role">Ideias e Conceitos</span>
+                <span className="team-name">Carolynne Cristina S. Silva</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Versão */}
         <div className="about-release">
           <div className="about-release-info">

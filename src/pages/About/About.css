@@ -146,6 +146,118 @@
   gap: 10px;
 }
 
+/* Equipe / Agradecimentos (Premium Card) */
+.about-team-card {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow effect behind the card */
+.about-team-card::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.team-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.team-heart-icon {
+  color: #f43f5e;
+  animation: pulse-heart 2s infinite ease-in-out;
+}
+
+.team-card-header h3 {
+  color: #fff;
+  font-size: 1.2rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 800;
+  background: linear-gradient(to right, #fff, #cbd5e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.about-team-members {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.team-member {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  border-left: 4px solid transparent;
+  transition: transform 0.2s ease;
+}
+
+.team-member:hover {
+  transform: translateX(4px);
+}
+
+/* Specific styling for Developer */
+.team-member.developer {
+  border-left-color: #3b82f6; /* Blue */
+}
+.team-member.developer .team-name {
+  color: #60a5fa; /* Light Blue */
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Specific styling for Ideas/Son */
+.team-member.ideas {
+  border-left-color: #f59e0b; /* Gold/Yellow */
+}
+.team-member.ideas .team-name {
+  color: #fbbf24; /* Golden */
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.team-member-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.team-role {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.team-name {
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+@keyframes pulse-heart {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
 .about-release-info {
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.07);

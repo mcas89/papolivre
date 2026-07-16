@@ -7,12 +7,15 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       devOptions: {
-        enabled: true
+        enabled: true,
+        type: 'module'
       },
       manifest: {
         name: 'PapoLivre',
         short_name: 'PapoLivre',
+        start_url: '/',
         description: 'Bate-papo em tempo real com efeitos e salas VIP',
         theme_color: '#0f0518',
         background_color: '#0f0518',

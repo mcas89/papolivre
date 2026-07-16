@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import logo from "../../../assets/logo/logo01.png";
+import InstallPWA from "../../ui/InstallPWA/InstallPWA";
 
 function HomeDrawer({
   open,
@@ -112,6 +113,11 @@ function HomeDrawer({
             Premium
             <span className="drawer-premium-badge">PRO</span>
           </button>
+
+          {/* Conditional PWA Install Button */}
+          <div style={{ padding: "0 12px" }}>
+            <InstallPWA />
+          </div>
 
         </nav>
 

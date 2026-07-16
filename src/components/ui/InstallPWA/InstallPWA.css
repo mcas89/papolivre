@@ -1,0 +1,48 @@
+.install-pwa-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.install-pwa-btn:active {
+  transform: scale(0.97);
+}
+
+.install-pwa-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: white;
+}
+
+.install-pwa-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.install-pwa-text span {
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.install-pwa-text small {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  line-height: 1.2;
+}

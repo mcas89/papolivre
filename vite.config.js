@@ -18,7 +18,7 @@ export default defineConfig({
         start_url: '/',
         description: 'Bate-papo em tempo real com efeitos e salas VIP',
         theme_color: '#0f0518',
-        background_color: '#0f0518',
+        background_color: '#ffffff',
         display: 'standalone',
         icons: [
           {
